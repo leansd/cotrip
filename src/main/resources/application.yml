@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:cotrip
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8089/realms/emergent
+          jwk-set-uri: http://localhost:8089/realms/emergent/protocol/openid-connect/certs
+  server:
+    port: 8080
