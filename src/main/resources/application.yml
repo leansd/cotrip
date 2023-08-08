@@ -12,5 +12,3 @@ spring:
         jwt:
           issuer-uri: http://localhost:8089/realms/emergent
           jwk-set-uri: http://localhost:8089/realms/emergent/protocol/openid-connect/certs
-  server:
-    port: 8080
