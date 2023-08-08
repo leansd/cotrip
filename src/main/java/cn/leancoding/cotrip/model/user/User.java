@@ -1,4 +1,5 @@
 package cn.leancoding.cotrip.model.user;
+import cn.leancoding.cotrip.base.DomainEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,10 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
-public class User {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+public class User extends DomainEntity {
     private String name;
+    public User(String id) {
+        super(id);
+    }
 }

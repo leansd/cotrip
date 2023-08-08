@@ -1,9 +1,11 @@
 package cn.leancoding.cotrip.service;
 
+import cn.leancoding.cotrip.base.GenericId;
 import cn.leancoding.cotrip.event.EventPublisher;
 import cn.leancoding.cotrip.model.plan.TripPlan;
 import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leancoding.cotrip.model.plan.TripPlanRepository;
+import cn.leancoding.cotrip.model.user.UserId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,7 @@ public class TripPlanServiceTest {
         doNothing().when(eventPublisher).publishEvent(any(TripPlanCreatedEvent.class));
 
         // 调用服务方法
-        TripPlan tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
+        TripPlan tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
 
         // 验证数据库保存
         Optional<TripPlan> retrievedTripPlan = tripPlanRepository.findById(tripPlan.getId());

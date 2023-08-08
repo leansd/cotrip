@@ -2,12 +2,15 @@ package cn.leancoding.cotrip.service;
 
 import cn.leancoding.cotrip.event.EventPublisher;
 import cn.leancoding.cotrip.model.location.Location;
+import cn.leancoding.cotrip.model.plan.RouteSpecification;
 import cn.leancoding.cotrip.model.plan.TripPlan;
 import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leancoding.cotrip.model.plan.TripPlanRepository;
+import cn.leancoding.cotrip.model.user.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.RouteMatcher;
 
 import java.util.UUID;
 
@@ -22,11 +25,12 @@ public class TripPlanService {
         this.eventPublisher = eventPublisher;
     }
 
-    public TripPlan createTripPlan(TripPlanDTO tripPlanDTO) {
+    public TripPlan createTripPlan(TripPlanDTO tripPlanDTO, UserId creatorId) {
         Location departureLocation = new Location(tripPlanDTO.getDepartureLocation().getLatitude(), tripPlanDTO.getDepartureLocation().getLongitude());
         Location arrivalLocation = new Location(tripPlanDTO.getArrivalLocation().getLatitude(), tripPlanDTO.getArrivalLocation().getLongitude());
 
-        TripPlan tripPlan = new TripPlan(UUID.randomUUID().toString(), departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime(), tripPlanDTO.getFlexibleWaitTime());
+        TripPlan tripPlan = new TripPlan(creatorId,
+                new RouteSpecification(departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime(), tripPlanDTO.getFlexibleWaitTime()));
         tripPlanRepository.save(tripPlan);
 
         eventPublisher.publishEvent(new TripPlanCreatedEvent(tripPlan.getId()));

@@ -1,5 +1,7 @@
 package cn.leancoding.cotrip.model.plan;
 
+import cn.leancoding.cotrip.base.DomainEntity;
+import cn.leancoding.cotrip.model.user.UserId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,21 +16,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class TripPlan {
-    @Id
-    private String id;
+public class TripPlan extends DomainEntity {
+
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "latitude", column = @Column(name = "departure_lat")),
-            @AttributeOverride(name = "longitude", column = @Column(name = "departure_lng")),
+            @AttributeOverride(name = "value", column = @Column(name = "creator_id")),
     })
-    private Location departureLocation;
+    UserId creatorId;
+
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "latitude", column = @Column(name = "arrival_lat")),
-            @AttributeOverride(name = "longitude", column = @Column(name = "arrival_lng")),
-    })
-    private Location arrivalLocation;
-    private LocalDateTime plannedDepartureTime;
-    private int flexibleWaitTime; // 以分钟为单位的可前后浮动的等待时间
+    RouteSpecification routeSpecification;
 }
