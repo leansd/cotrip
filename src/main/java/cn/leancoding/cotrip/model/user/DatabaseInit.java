@@ -1,4 +1,4 @@
-package cn.leancoding.cotrip.model;
+package cn.leancoding.cotrip.model.user;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

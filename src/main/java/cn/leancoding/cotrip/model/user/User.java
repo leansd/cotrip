@@ -1,4 +1,4 @@
-package cn.leancoding.cotrip.model;
+package cn.leancoding.cotrip.model.user;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
