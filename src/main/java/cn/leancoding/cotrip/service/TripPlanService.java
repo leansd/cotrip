@@ -2,17 +2,13 @@ package cn.leancoding.cotrip.service;
 
 import cn.leancoding.cotrip.event.EventPublisher;
 import cn.leancoding.cotrip.model.location.Location;
-import cn.leancoding.cotrip.model.plan.RouteSpecification;
+import cn.leancoding.cotrip.model.plan.PlanSpecification;
 import cn.leancoding.cotrip.model.plan.TripPlan;
 import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leancoding.cotrip.model.plan.TripPlanRepository;
 import cn.leancoding.cotrip.model.user.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.util.RouteMatcher;
-
-import java.util.UUID;
 
 @Service
 public class TripPlanService {
@@ -30,7 +26,7 @@ public class TripPlanService {
         Location arrivalLocation = new Location(tripPlanDTO.getArrivalLocation().getLatitude(), tripPlanDTO.getArrivalLocation().getLongitude());
 
         TripPlan tripPlan = new TripPlan(creatorId,
-                new RouteSpecification(departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime(), tripPlanDTO.getFlexibleWaitTime()));
+                new PlanSpecification(departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime(), tripPlanDTO.getFlexibleWaitTime()));
         tripPlanRepository.save(tripPlan);
 
         eventPublisher.publishEvent(new TripPlanCreatedEvent(tripPlan.getId()));

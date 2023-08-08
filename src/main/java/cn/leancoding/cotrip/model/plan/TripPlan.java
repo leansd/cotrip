@@ -7,9 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import cn.leancoding.cotrip.model.location.Location;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -25,5 +22,5 @@ public class TripPlan extends DomainEntity {
     UserId creatorId;
 
     @Embedded
-    RouteSpecification routeSpecification;
+    PlanSpecification planSpecification;
 }

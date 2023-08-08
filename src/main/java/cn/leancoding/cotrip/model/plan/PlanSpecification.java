@@ -12,11 +12,23 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Embeddable
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class RouteSpecification  extends ValueObject {
+public class PlanSpecification extends ValueObject {
+
+    public PlanSpecification(Location departureLocation, Location arrivalLocation, LocalDateTime plannedDepartureTime, int flexibleWaitTime) {
+        this(departureLocation, arrivalLocation, plannedDepartureTime, flexibleWaitTime, 1);
+    }
+
+    public PlanSpecification(Location departureLocation, Location arrivalLocation, LocalDateTime plannedDepartureTime, int flexibleWaitTime, int requiredSeats) {
+        this.departureLocation = departureLocation;
+        this.arrivalLocation = arrivalLocation;
+        this.plannedDepartureTime = plannedDepartureTime;
+        this.flexibleWaitTime = flexibleWaitTime;
+        this.requiredSeats = requiredSeats;
+    }
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "latitude", column = @Column(name = "departure_lat")),
@@ -31,15 +43,17 @@ public class RouteSpecification  extends ValueObject {
     private Location arrivalLocation;
     private LocalDateTime plannedDepartureTime;
     private int flexibleWaitTime; // 以分钟为单位的可前后浮动的等待时间
+    private int requiredSeats; // 需要的座位数
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RouteSpecification that = (RouteSpecification) o;
+        PlanSpecification that = (PlanSpecification) o;
 
         if (flexibleWaitTime != that.flexibleWaitTime) return false;
+        if (requiredSeats != that.requiredSeats) return false;
         if (!Objects.equals(departureLocation, that.departureLocation))
             return false;
         if (!Objects.equals(arrivalLocation, that.arrivalLocation))
@@ -53,6 +67,7 @@ public class RouteSpecification  extends ValueObject {
         result = 31 * result + (arrivalLocation != null ? arrivalLocation.hashCode() : 0);
         result = 31 * result + (plannedDepartureTime != null ? plannedDepartureTime.hashCode() : 0);
         result = 31 * result + flexibleWaitTime;
+        result = 31 * result + requiredSeats;
         return result;
     }
 }
