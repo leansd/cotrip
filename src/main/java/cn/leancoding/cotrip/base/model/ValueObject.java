@@ -1,4 +1,4 @@
-package cn.leancoding.cotrip.base;
+package cn.leancoding.cotrip.base.model;
 public abstract class ValueObject {
     @Override
     public abstract boolean equals(Object o);

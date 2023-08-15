@@ -1,6 +1,6 @@
 package cn.leancoding.cotrip.model.plan;
 
-import cn.leancoding.cotrip.base.DomainEntity;
+import cn.leancoding.cotrip.base.model.DomainEntity;
 import cn.leancoding.cotrip.model.user.UserId;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +16,8 @@ public class TripPlan extends DomainEntity {
     public TripPlan(UserId creatorId, PlanSpecification planSpecification) {
         this();
         this.planSpecification = planSpecification;
-        this.status = TripPlanStatus.DRAFTED;
+        this.status = TripPlanStatus.WAITING_MATCH;
+        this.creatorId = creatorId;
     }
 
     @Embedded
@@ -31,7 +32,4 @@ public class TripPlan extends DomainEntity {
     @Enumerated(EnumType.STRING)
     private TripPlanStatus status;
 
-    public void publish() {
-        this.status = TripPlanStatus.PUBLISHED;
-    }
 }

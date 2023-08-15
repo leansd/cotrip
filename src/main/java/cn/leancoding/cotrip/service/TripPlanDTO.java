@@ -13,5 +13,4 @@ public class TripPlanDTO {
     private LocationDTO departureLocation;
     private LocationDTO arrivalLocation;
     private LocalDateTime plannedDepartureTime;
-    private int flexibleWaitTime;
 }

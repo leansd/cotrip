@@ -1,4 +1,4 @@
-package cn.leancoding.cotrip.event;
+package cn.leancoding.cotrip.base.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

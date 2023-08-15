@@ -1,6 +1,6 @@
 package cn.leancoding.cotrip.service;
 
-import cn.leancoding.cotrip.event.EventPublisher;
+import cn.leancoding.cotrip.base.event.EventPublisher;
 import cn.leancoding.cotrip.model.location.Location;
 import cn.leancoding.cotrip.model.plan.PlanSpecification;
 import cn.leancoding.cotrip.model.plan.TripPlan;
@@ -26,9 +26,8 @@ public class TripPlanService {
         Location arrivalLocation = new Location(tripPlanDTO.getArrivalLocation().getLatitude(), tripPlanDTO.getArrivalLocation().getLongitude());
 
         TripPlan tripPlan = new TripPlan(creatorId,
-                new PlanSpecification(departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime(), tripPlanDTO.getFlexibleWaitTime()));
+                new PlanSpecification(departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime()));
         eventPublisher.publishEvent(new TripPlanCreatedEvent(tripPlan.getId()));
-        tripPlan.publish();
         tripPlanRepository.save(tripPlan);
         return tripPlan;
     }

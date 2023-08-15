@@ -1,7 +1,7 @@
 package cn.leancoding.cotrip.model.plan;
 
 
-import cn.leancoding.cotrip.base.DomainEvent;
+import cn.leancoding.cotrip.base.model.DomainEvent;
 import lombok.Data;
 
 @Data

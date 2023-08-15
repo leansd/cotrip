@@ -1,4 +1,4 @@
-package cn.leancoding.cotrip.base;
+package cn.leancoding.cotrip.base.model;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;

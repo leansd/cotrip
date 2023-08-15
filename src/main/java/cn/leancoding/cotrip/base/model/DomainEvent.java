@@ -1,4 +1,4 @@
-package cn.leancoding.cotrip.base;
+package cn.leancoding.cotrip.base.model;
 
 import lombok.Data;
 

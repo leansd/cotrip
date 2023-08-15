@@ -1,8 +1,7 @@
 package cn.leancoding.cotrip.model.plan;
 
 public enum TripPlanStatus {
-    DRAFTED,
-    PUBLISHED,
+    WAITING_MATCH,
     JOINED,
     CANCELLED,
     COMPLETED

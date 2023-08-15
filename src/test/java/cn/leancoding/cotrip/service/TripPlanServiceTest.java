@@ -1,7 +1,7 @@
 package cn.leancoding.cotrip.service;
 
-import cn.leancoding.cotrip.base.GenericId;
-import cn.leancoding.cotrip.event.EventPublisher;
+import cn.leancoding.cotrip.base.model.GenericId;
+import cn.leancoding.cotrip.base.event.EventPublisher;
 import cn.leancoding.cotrip.model.plan.TripPlan;
 import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leancoding.cotrip.model.plan.TripPlanRepository;
@@ -44,7 +44,7 @@ public class TripPlanServiceTest {
         // 创建测试数据
         LocationDTO departureLocation = new LocationDTO(31.240084, 121.501868);
         LocationDTO arrivalLocation = new LocationDTO(31.232862, 121.472768);
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(departureLocation, arrivalLocation, LocalDateTime.now().plusHours(2), 30);
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(departureLocation, arrivalLocation, LocalDateTime.now().plusHours(2));
 
         // 模拟事件发布
         doNothing().when(eventPublisher).publishEvent(any(TripPlanCreatedEvent.class));
@@ -56,7 +56,7 @@ public class TripPlanServiceTest {
         Optional<TripPlan> retrievedTripPlan = tripPlanRepository.findById(tripPlan.getId());
         assertTrue(retrievedTripPlan.isPresent());
         assertEquals(tripPlan.getId(), retrievedTripPlan.get().getId());
-        assertEquals(TripPlanStatus.PUBLISHED, retrievedTripPlan.get().getStatus());
+        assertEquals(TripPlanStatus.WAITING_MATCH, retrievedTripPlan.get().getStatus());
 
         // 使用ArgumentCaptor来捕获参数
         ArgumentCaptor<TripPlanCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(TripPlanCreatedEvent.class);
