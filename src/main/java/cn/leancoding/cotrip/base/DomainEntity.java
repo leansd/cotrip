@@ -3,7 +3,6 @@ package cn.leancoding.cotrip.base;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
-
 import java.util.Objects;
 import java.util.UUID;
 

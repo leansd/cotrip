@@ -6,10 +6,10 @@ import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
 
 @MappedSuperclass
-public abstract class OrmValueObject extends ValueObject{
+public abstract class PersistentableValueObject extends ValueObject{
     @Id
     private String id;
-    protected OrmValueObject() {
+    protected PersistentableValueObject() {
         this.id = UUID.randomUUID().toString();
     }
 

@@ -27,10 +27,9 @@ public class TripPlanService {
 
         TripPlan tripPlan = new TripPlan(creatorId,
                 new PlanSpecification(departureLocation, arrivalLocation, tripPlanDTO.getPlannedDepartureTime(), tripPlanDTO.getFlexibleWaitTime()));
-        tripPlanRepository.save(tripPlan);
-
         eventPublisher.publishEvent(new TripPlanCreatedEvent(tripPlan.getId()));
-
+        tripPlan.publish();
+        tripPlanRepository.save(tripPlan);
         return tripPlan;
     }
 

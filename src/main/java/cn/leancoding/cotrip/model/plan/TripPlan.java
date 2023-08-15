@@ -3,17 +3,21 @@ package cn.leancoding.cotrip.model.plan;
 import cn.leancoding.cotrip.base.DomainEntity;
 import cn.leancoding.cotrip.model.user.UserId;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class TripPlan extends DomainEntity {
+
+    public TripPlan(UserId creatorId, PlanSpecification planSpecification) {
+        this();
+        this.planSpecification = planSpecification;
+        this.status = TripPlanStatus.DRAFTED;
+    }
 
     @Embedded
     @AttributeOverrides({
@@ -23,4 +27,11 @@ public class TripPlan extends DomainEntity {
 
     @Embedded
     PlanSpecification planSpecification;
+
+    @Enumerated(EnumType.STRING)
+    private TripPlanStatus status;
+
+    public void publish() {
+        this.status = TripPlanStatus.PUBLISHED;
+    }
 }

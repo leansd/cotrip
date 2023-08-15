@@ -5,6 +5,7 @@ import cn.leancoding.cotrip.event.EventPublisher;
 import cn.leancoding.cotrip.model.plan.TripPlan;
 import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leancoding.cotrip.model.plan.TripPlanRepository;
+import cn.leancoding.cotrip.model.plan.TripPlanStatus;
 import cn.leancoding.cotrip.model.user.UserId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +56,7 @@ public class TripPlanServiceTest {
         Optional<TripPlan> retrievedTripPlan = tripPlanRepository.findById(tripPlan.getId());
         assertTrue(retrievedTripPlan.isPresent());
         assertEquals(tripPlan.getId(), retrievedTripPlan.get().getId());
+        assertEquals(TripPlanStatus.PUBLISHED, retrievedTripPlan.get().getStatus());
 
         // 使用ArgumentCaptor来捕获参数
         ArgumentCaptor<TripPlanCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(TripPlanCreatedEvent.class);
