@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static cn.leancoding.cotrip.service.TestMap.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -41,29 +42,26 @@ public class TripPlanServiceTest {
 
     @Test
     public void testCreateTripPlan() {
-        // 创建测试数据
-        LocationDTO departureLocation = new LocationDTO(31.240084, 121.501868);
-        LocationDTO arrivalLocation = new LocationDTO(31.232862, 121.472768);
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(departureLocation, arrivalLocation, LocalDateTime.now().plusHours(2));
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(hqAirport, peopleSquare, TimeSpanDTO.builder()
+                .start(LocalDateTime.of(2023, 5, 1, 8, 0))
+                .end(LocalDateTime.of(2023, 5, 1, 8, 30))
+                .build());
 
-        // 模拟事件发布
-        doNothing().when(eventPublisher).publishEvent(any(TripPlanCreatedEvent.class));
-
-        // 调用服务方法
         TripPlan tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
+        verifyTripPlanCreated(tripPlan.getId());
+        verifyTripPlanEventPublished(tripPlan.getId());
+    }
 
-        // 验证数据库保存
-        Optional<TripPlan> retrievedTripPlan = tripPlanRepository.findById(tripPlan.getId());
+    private void verifyTripPlanCreated(String tripPlanId) {
+        Optional<TripPlan> retrievedTripPlan = tripPlanRepository.findById(tripPlanId);
         assertTrue(retrievedTripPlan.isPresent());
-        assertEquals(tripPlan.getId(), retrievedTripPlan.get().getId());
         assertEquals(TripPlanStatus.WAITING_MATCH, retrievedTripPlan.get().getStatus());
+    }
 
-        // 使用ArgumentCaptor来捕获参数
+    private void verifyTripPlanEventPublished(String tripPlanId) {
         ArgumentCaptor<TripPlanCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(TripPlanCreatedEvent.class);
-
-        // 验证事件发布
         verify(eventPublisher).publishEvent(argumentCaptor.capture());
         TripPlanCreatedEvent capturedEvent = argumentCaptor.getValue();
-        assertEquals(tripPlan.getId(), capturedEvent.getTripPlanId());
+        assertEquals(tripPlanId, capturedEvent.getTripPlanId());
     }
 }

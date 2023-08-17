@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 public class TripPlanDTO {
     private LocationDTO departureLocation;
     private LocationDTO arrivalLocation;
-    private LocalDateTime plannedDepartureTime;
+    private TimeSpanDTO plannedDepartureTime;
 }

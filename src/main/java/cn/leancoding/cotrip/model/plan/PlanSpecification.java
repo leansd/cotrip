@@ -3,6 +3,7 @@ package cn.leancoding.cotrip.model.plan;
 import cn.leancoding.cotrip.base.model.ValueObject;
 import cn.leancoding.cotrip.model.location.Location;
 import cn.leancoding.cotrip.model.location.LocationConverter;
+import cn.leancoding.cotrip.service.TimeSpanDTO;
 import cn.leancoding.cotrip.service.TripPlanDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -15,17 +16,16 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor
 @Data
-@Builder
 public class PlanSpecification extends ValueObject {
 
-    public PlanSpecification(Location departureLocation, Location arrivalLocation, LocalDateTime plannedDepartureTime) {
+    public PlanSpecification(Location departureLocation, Location arrivalLocation, TimeSpanDTO plannedDepartureTime) {
         this(departureLocation, arrivalLocation, plannedDepartureTime,  1);
     }
 
-    public PlanSpecification(Location departureLocation, Location arrivalLocation, LocalDateTime plannedDepartureTime, int requiredSeats) {
+    public PlanSpecification(Location departureLocation, Location arrivalLocation, TimeSpanDTO plannedDepartureTime, int requiredSeats) {
         this.departureLocation = departureLocation;
         this.arrivalLocation = arrivalLocation;
-        this.plannedDepartureTime = plannedDepartureTime;
+        this.plannedDepartureTime = TimeSpanConverter.toEntity(plannedDepartureTime);
         this.requiredSeats = requiredSeats;
     }
 
@@ -33,7 +33,7 @@ public class PlanSpecification extends ValueObject {
         super();
         this.departureLocation = LocationConverter.toEntity(tripPlanDTO.getDepartureLocation());
         this.arrivalLocation = LocationConverter.toEntity(tripPlanDTO.getArrivalLocation());
-        this.plannedDepartureTime = tripPlanDTO.getPlannedDepartureTime();
+        this.plannedDepartureTime = TimeSpanConverter.toEntity(tripPlanDTO.getPlannedDepartureTime());
         this.requiredSeats = 1;
 
     }
@@ -50,7 +50,12 @@ public class PlanSpecification extends ValueObject {
             @AttributeOverride(name = "longitude", column = @Column(name = "arrival_lng")),
     })
     private Location arrivalLocation;
-    private LocalDateTime plannedDepartureTime;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "start", column = @Column(name = "departure_time_start")),
+            @AttributeOverride(name = "end", column = @Column(name = "departure_time_end")),
+    })
+    private TimeSpan plannedDepartureTime;
     private int requiredSeats; // 需要的座位数
 
     @Override

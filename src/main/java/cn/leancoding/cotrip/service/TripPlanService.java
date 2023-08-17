@@ -31,6 +31,4 @@ public class TripPlanService {
         tripPlanRepository.save(tripPlan);
         return tripPlan;
     }
-
-    // 其他服务方法
 }
