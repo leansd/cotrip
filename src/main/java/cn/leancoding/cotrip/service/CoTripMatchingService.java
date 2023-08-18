@@ -22,7 +22,7 @@ public class CoTripMatchingService {
     private final EventPublisher eventPublisher;
 
     @Autowired
-    public CoTripMatchingService(TripPlanRepository tripPlanRepository, CoTripRepository coTripRepository, CoTripRepository coTripRepository1, EventPublisher eventPublisher) {
+    public CoTripMatchingService(TripPlanRepository tripPlanRepository, CoTripRepository coTripRepository,  EventPublisher eventPublisher) {
         this.tripPlanRepository = tripPlanRepository;
         this.coTripRepository = coTripRepository;
         this.eventPublisher = eventPublisher;
