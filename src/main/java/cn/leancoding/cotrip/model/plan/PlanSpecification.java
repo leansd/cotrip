@@ -3,6 +3,7 @@ package cn.leancoding.cotrip.model.plan;
 import cn.leancoding.cotrip.base.model.ValueObject;
 import cn.leancoding.cotrip.model.location.Location;
 import cn.leancoding.cotrip.model.location.LocationConverter;
+import cn.leancoding.cotrip.service.PlanSpecificationDTO;
 import cn.leancoding.cotrip.service.TimeSpanDTO;
 import cn.leancoding.cotrip.service.TripPlanDTO;
 import jakarta.persistence.*;
@@ -29,13 +30,12 @@ public class PlanSpecification extends ValueObject {
         this.requiredSeats = requiredSeats;
     }
 
-    public PlanSpecification(TripPlanDTO tripPlanDTO) {
+    public PlanSpecification(PlanSpecificationDTO dto) {
         super();
-        this.departureLocation = LocationConverter.toEntity(tripPlanDTO.getDepartureLocation());
-        this.arrivalLocation = LocationConverter.toEntity(tripPlanDTO.getArrivalLocation());
-        this.plannedDepartureTime = TimeSpanConverter.toEntity(tripPlanDTO.getPlannedDepartureTime());
-        this.requiredSeats = 1;
-
+        this.departureLocation = LocationConverter.toEntity(dto.getDepartureLocation());
+        this.arrivalLocation = LocationConverter.toEntity(dto.getArrivalLocation());
+        this.plannedDepartureTime = TimeSpanConverter.toEntity(dto.getPlannedDepartureTime());
+        this.requiredSeats = (dto.getRequiredSeats()!=null)?dto.getRequiredSeats():1;
     }
 
     @Embedded
@@ -56,7 +56,7 @@ public class PlanSpecification extends ValueObject {
             @AttributeOverride(name = "end", column = @Column(name = "departure_time_end")),
     })
     private TimeSpan plannedDepartureTime;
-    private int requiredSeats; // 需要的座位数
+    private int requiredSeats;
 
     @Override
     public boolean equals(Object o) {

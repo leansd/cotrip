@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TripPlanDTO {
-    private LocationDTO departureLocation;
-    private LocationDTO arrivalLocation;
-    private TimeSpanDTO plannedDepartureTime;
+    private String id;
+    private PlanSpecificationDTO planSpecification;
+    private String status;
+    public TripPlanDTO(PlanSpecificationDTO planSpecification) {
+        this.id = null;
+        this.planSpecification = planSpecification;
+    }
 }

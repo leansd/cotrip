@@ -42,10 +42,10 @@ public class TripPlanServiceTest {
 
     @Test
     public void testCreateTripPlan() {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(hqAirport, peopleSquare, TimeSpanDTO.builder()
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecificationDTO(hqAirport, peopleSquare, TimeSpanDTO.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
-                .build());
+                .build(),1));
 
         TripPlan tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
         verifyTripPlanCreated(tripPlan.getId());
@@ -62,6 +62,6 @@ public class TripPlanServiceTest {
         ArgumentCaptor<TripPlanCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(TripPlanCreatedEvent.class);
         verify(eventPublisher).publishEvent(argumentCaptor.capture());
         TripPlanCreatedEvent capturedEvent = argumentCaptor.getValue();
-        assertEquals(tripPlanId, capturedEvent.getTripPlanId());
+        assertEquals(tripPlanId, capturedEvent.getData().getId());
     }
 }

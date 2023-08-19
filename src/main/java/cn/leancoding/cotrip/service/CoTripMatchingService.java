@@ -30,17 +30,13 @@ public class CoTripMatchingService {
 
     @EventListener(TripPlanCreatedEvent.class)
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
-        Optional<TripPlan> tripPlan = tripPlanRepository.findById(event.getTripPlanId());
-        if (!tripPlan.isPresent()) {
-            throw new InconsistentStatusException("TripPlanCreatedEvent received but trip plan not found");
-        }
-        CoTrip coTrip = matchExistingTripPlan(tripPlan.get());
+        CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
             coTripRepository.save(coTrip);
         }
     }
 
-    private CoTrip matchExistingTripPlan(TripPlan tripPlan) {
+    private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {
         List<TripPlan> tripPlans = tripPlanRepository.findAllNotMatching();
         if (tripPlans.size() == 0) return null;
         for (TripPlan plan : tripPlans) {
