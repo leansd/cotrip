@@ -2,10 +2,7 @@ package cn.leancoding.cotrip.service;
 
 import cn.leancoding.cotrip.base.model.GenericId;
 import cn.leancoding.cotrip.base.event.EventPublisher;
-import cn.leancoding.cotrip.model.plan.TripPlan;
-import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
-import cn.leancoding.cotrip.model.plan.TripPlanRepository;
-import cn.leancoding.cotrip.model.plan.TripPlanStatus;
+import cn.leancoding.cotrip.model.plan.*;
 import cn.leancoding.cotrip.model.user.UserId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +39,7 @@ public class TripPlanServiceTest {
 
     @Test
     public void testCreateTripPlan() {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecificationDTO(hqAirport, peopleSquare, TimeSpanDTO.builder()
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));

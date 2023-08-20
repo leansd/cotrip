@@ -33,14 +33,14 @@ public class CoTripMatchingServiceTest {
     @Test
     public void testMatchingWithExactSamePlan() throws InconsistentStatusException {
         CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecificationDTO(orientalPear, peopleSquare, TimeSpanDTO.builder()
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
                 .build(),1));
         TripPlan existingPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
-                PlanSpecificationConverter.toEntity(tripPlanDTO.getPlanSpecification()));
+                tripPlanDTO.getPlanSpecification());
         TripPlan newPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
-                PlanSpecificationConverter.toEntity(tripPlanDTO.getPlanSpecification()));
+                tripPlanDTO.getPlanSpecification());
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
         when(tripPlanRepository.findById(newPlan.getId())).thenReturn(Optional.of(newPlan));
 
@@ -68,26 +68,26 @@ public class CoTripMatchingServiceTest {
     public void testNoMatchingWithDifferentTimePlan() throws InconsistentStatusException {
         CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
         // Given 出行计划A
-        PlanSpecificationDTO specA = new PlanSpecificationDTO(
+        PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
-                TimeSpanDTO.builder()
+                TimeSpan.builder()
                         .start(Y2305010800)
                         .end(Y2305010830)
                         .build(),1);
 
         TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
-                PlanSpecificationConverter.toEntity(specA));
+                specA);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
-        PlanSpecificationDTO specB = new PlanSpecificationDTO(
+        PlanSpecification specB = new PlanSpecification(
                 orientalPear, peopleSquare,
-                TimeSpanDTO.builder()
+                TimeSpan.builder()
                         .start(Y2305010830)
                         .end(Y2305010900)
                         .build(),1);
         TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
-                PlanSpecificationConverter.toEntity(specB));
+                specB);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
 
         // Then 出行计划A和B无法匹配成共乘

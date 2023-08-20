@@ -2,9 +2,11 @@ package cn.leancoding.cotrip.service;
 
 import cn.leancoding.cotrip.base.event.EventPublisher;
 import cn.leancoding.cotrip.model.cotrip.CoTrip;
+import cn.leancoding.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leancoding.cotrip.model.cotrip.CoTripRepository;
 import cn.leancoding.cotrip.model.cotrip.CoTripStatus;
 import cn.leancoding.cotrip.model.plan.TripPlan;
+import cn.leancoding.cotrip.model.plan.TripPlanConverter;
 import cn.leancoding.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leancoding.cotrip.model.plan.TripPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ public class CoTripMatchingService {
         CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
             coTripRepository.save(coTrip);
+            eventPublisher.publishEvent(new CoTripCreatedEvent(coTrip.getId()));
         }
     }
 

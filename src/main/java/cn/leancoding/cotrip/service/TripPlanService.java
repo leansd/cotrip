@@ -20,7 +20,7 @@ public class TripPlanService {
 
     public TripPlan createTripPlan(TripPlanDTO tripPlanDTO, UserId creatorId) {
 
-        PlanSpecification spec = PlanSpecificationConverter.toEntity(tripPlanDTO.getPlanSpecification());
+        PlanSpecification spec = tripPlanDTO.getPlanSpecification();
         TripPlan tripPlan = new TripPlan(creatorId,
                 spec);
         eventPublisher.publishEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
