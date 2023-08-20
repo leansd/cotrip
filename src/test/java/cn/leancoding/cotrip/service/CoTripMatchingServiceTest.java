@@ -56,10 +56,7 @@ public class CoTripMatchingServiceTest {
     }
 
     private void verifyNoCoTripCreatedEventPublished() {
-        ArgumentCaptor<CoTripCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(CoTripCreatedEvent.class);
-        verify(eventPublisher).publishEvent(argumentCaptor.capture());
-        CoTripCreatedEvent capturedEvent = argumentCaptor.getValue();
-        assertNotNull(capturedEvent);
+        verify(eventPublisher, times(0)).publishEvent(any(CoTripCreatedEvent.class));
     }
 
 
@@ -90,8 +87,66 @@ public class CoTripMatchingServiceTest {
                 specB);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
 
-        // Then 出行计划A和B无法匹配成共乘
-        verify(eventPublisher, times(0)).publishEvent(any(CoTripCreatedEvent.class));
+        verifyNoCoTripCreatedEventPublished();
+    }
+
+    @DisplayName("座位数不超出限制可以匹配")
+    @Test
+    public void testMatchingWhenNoExceedMaxSeats() throws InconsistentStatusException {
+        CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
+        // Given 出行计划A
+        PlanSpecification specA = new PlanSpecification(
+                orientalPear, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010800)
+                        .end(Y2305010830)
+                        .build(),3);
+
+        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+                specA);
+        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+
+        // Given 出行计划B
+        PlanSpecification specB = new PlanSpecification(
+                orientalPear, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010830)
+                        .end(Y2305010900)
+                        .build(),1);
+        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+                specB);
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
+        verifyCoTripCreatedEventPublished();
+    }
+
+    @DisplayName("超出座位数限制不可匹配")
+    @Test
+    public void testNoMatchingWhenExceedMaxSeats() throws InconsistentStatusException {
+        CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
+        // Given 出行计划A
+        PlanSpecification specA = new PlanSpecification(
+                orientalPear, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010800)
+                        .end(Y2305010830)
+                        .build(),3);
+
+        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+                specA);
+        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+
+        // Given 出行计划B
+        PlanSpecification specB = new PlanSpecification(
+                orientalPear, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010830)
+                        .end(Y2305010900)
+                        .build(),2);
+        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+                specB);
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
+
+        verifyNoCoTripCreatedEventPublished();
     }
 
 }

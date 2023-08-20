@@ -44,13 +44,27 @@ public class CoTripMatchingService {
         if (tripPlans.size() == 0) return null;
         for (TripPlan plan : tripPlans) {
             if (plan.getId().equals(tripPlan.getId())) continue;
-            if (plan.getPlanSpecification().equals(tripPlan.getPlanSpecification()))
-                return CoTrip.builder()
-                        .status(CoTripStatus.CREATED)
-                        .tripPlanIdList(tripPlans.stream().map(TripPlan::getId)
-                                .collect(Collectors.toList()))
-                        .build();
+            if (exceedMaxSeats(plan, tripPlan)) continue;
+            if (startLocationNotMatch(plan, tripPlan)) continue;
+            if (endLocationNotMatch(plan, tripPlan)) continue;
+            return CoTrip.builder()
+                    .status(CoTripStatus.CREATED)
+                    .tripPlanIdList(tripPlans.stream().map(TripPlan::getId)
+                            .collect(Collectors.toList()))
+                    .build();
         }
         return null;
+    }
+
+    private boolean endLocationNotMatch(TripPlan existPlan, TripPlanDTO newPlan) {
+        return false;
+    }
+
+    private boolean startLocationNotMatch(TripPlan existPlan, TripPlanDTO newPlan) {
+        return false;
+    }
+
+    private boolean exceedMaxSeats(TripPlan plan, TripPlanDTO tripPlan) {
+        return plan.getPlanSpecification().getRequiredSeats() + tripPlan.getPlanSpecification().getRequiredSeats() > 4;
     }
 }
