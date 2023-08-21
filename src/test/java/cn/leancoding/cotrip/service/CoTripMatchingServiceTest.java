@@ -6,6 +6,9 @@ import cn.leancoding.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leancoding.cotrip.model.cotrip.CoTripRepository;
 import cn.leancoding.cotrip.model.plan.*;
 import cn.leancoding.cotrip.model.user.UserId;
+import cn.leancoding.geo.GeoService;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,15 +27,23 @@ public class CoTripMatchingServiceTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
     EventPublisher eventPublisher = Mockito.mock(EventPublisher.class);
+    GeoService geoService = Mockito.mock(GeoService.class);
 
     LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
     LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
+    LocalDateTime Y2305010831 = LocalDateTime.of(2023, 5, 1, 8, 31);
     LocalDateTime Y2305010900 = LocalDateTime.of(2023, 5, 1, 9, 00);
+
+    CoTripMatchingService coTripMatchingService = null;
+
+    @BeforeEach
+    public void setUp(){
+        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService, eventPublisher);
+    }
 
     @DisplayName("时间地点完全相同可以匹配")
     @Test
     public void testMatchingWithExactSamePlan() throws InconsistentStatusException {
-        CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
@@ -56,14 +67,13 @@ public class CoTripMatchingServiceTest {
     }
 
     private void verifyNoCoTripCreatedEventPublished() {
-        verify(eventPublisher, times(0)).publishEvent(any(CoTripCreatedEvent.class));
+        Mockito.verifyNoInteractions(eventPublisher);
     }
 
 
     @DisplayName("出行时间不一致则无法匹配")
     @Test
     public void testNoMatchingWithDifferentTimePlan() throws InconsistentStatusException {
-        CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -80,20 +90,18 @@ public class CoTripMatchingServiceTest {
         PlanSpecification specB = new PlanSpecification(
                 orientalPear, peopleSquare,
                 TimeSpan.builder()
-                        .start(Y2305010830)
+                        .start(Y2305010831)
                         .end(Y2305010900)
                         .build(),1);
         TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
                 specB);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
-
         verifyNoCoTripCreatedEventPublished();
     }
 
     @DisplayName("座位数不超出限制可以匹配")
     @Test
     public void testMatchingWhenNoExceedMaxSeats() throws InconsistentStatusException {
-        CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -122,7 +130,6 @@ public class CoTripMatchingServiceTest {
     @DisplayName("超出座位数限制不可匹配")
     @Test
     public void testNoMatchingWhenExceedMaxSeats() throws InconsistentStatusException {
-        CoTripMatchingService coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, eventPublisher);
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -149,4 +156,61 @@ public class CoTripMatchingServiceTest {
         verifyNoCoTripCreatedEventPublished();
     }
 
+    @DisplayName("起点超出限定距离不可匹配")
+    @Test
+    public void shouldNotMatchingWhenStartPointDistanceExceedLimitation() throws InconsistentStatusException {
+        // Given 出行计划A
+        PlanSpecification specA = new PlanSpecification(
+                orientalPear, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010800)
+                        .end(Y2305010830)
+                        .build(),1);
+
+        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+                specA);
+        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+
+        // Given 出行计划B
+        PlanSpecification specB = new PlanSpecification(
+                hqAirport, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010830)
+                        .end(Y2305010900)
+                        .build(),1);
+        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+                specB);
+        Mockito.when(geoService.getDistance(orientalPear, hqAirport)).thenReturn(21.0);
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
+        verifyNoCoTripCreatedEventPublished();
+    }
+
+    @DisplayName("起点未超出限定距离可以匹配")
+    @Test
+    public void shouldMatchingWhenStartPointDistanceExceedLimitation() throws InconsistentStatusException {
+        // Given 出行计划A
+        PlanSpecification specA = new PlanSpecification(
+                orientalPear, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010800)
+                        .end(Y2305010830)
+                        .build(),1);
+
+        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+                specA);
+        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+
+        // Given 出行计划B
+        PlanSpecification specB = new PlanSpecification(
+                oceanAquarium, peopleSquare,
+                TimeSpan.builder()
+                        .start(Y2305010830)
+                        .end(Y2305010900)
+                        .build(),1);
+        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+                specB);
+        Mockito.when(geoService.getDistance(orientalPear, oceanAquarium)).thenReturn(0.5);
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
+        verifyCoTripCreatedEventPublished();
+    }
 }
