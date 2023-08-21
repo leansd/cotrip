@@ -8,7 +8,7 @@
 		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>demo.leancoding.cn</groupId>
+	<groupId>demo.leansd.cn</groupId>
 	<artifactId>cotrip</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cotrip</name>
