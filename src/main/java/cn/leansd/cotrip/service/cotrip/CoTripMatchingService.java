@@ -1,6 +1,7 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.event.EventPublisher;
+import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
@@ -8,6 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.cotrip.model.plan.TripPlan;
 import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
+import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;

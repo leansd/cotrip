@@ -1,11 +1,12 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.cotrip.service.cotrip;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 
-import cn.leansd.cotrip.model.plan.TimeSpan;
+import cn.leansd.base.types.TimeSpan;
+import cn.leansd.cotrip.service.cotrip.TimeSpanMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

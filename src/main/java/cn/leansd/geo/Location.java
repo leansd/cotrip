@@ -1,9 +1,7 @@
-package cn.leansd.cotrip.model.plan;
+package cn.leansd.geo;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Embeddable
 @Data
@@ -11,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode
-public class TimeSpan {
-    LocalDateTime start;
-    LocalDateTime end;
+public class Location {
+    private double latitude;
+    private double longitude;
 }

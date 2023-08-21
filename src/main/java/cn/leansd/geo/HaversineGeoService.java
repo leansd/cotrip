@@ -1,6 +1,5 @@
 package cn.leansd.geo;
 
-import cn.leansd.geo.location.Location;
 import org.springframework.stereotype.Service;
 
 @Service

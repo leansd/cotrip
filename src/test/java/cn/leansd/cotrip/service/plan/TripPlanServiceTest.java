@@ -1,9 +1,12 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.cotrip.service.plan;
 
 import cn.leansd.base.model.GenericId;
 import cn.leansd.base.event.EventPublisher;
+import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.model.user.UserId;
+import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.cotrip.service.plan.TripPlanService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.base.exception;
 
 import cn.leansd.base.exception.ApplicationException;
 

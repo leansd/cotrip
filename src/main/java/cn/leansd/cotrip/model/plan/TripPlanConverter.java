@@ -1,7 +1,7 @@
 package cn.leansd.cotrip.model.plan;
 
 
-import cn.leansd.cotrip.service.TripPlanDTO;
+import cn.leansd.cotrip.service.plan.TripPlanDTO;
 
 public class TripPlanConverter {
     public static TripPlanDTO toDTO(TripPlan entity) {

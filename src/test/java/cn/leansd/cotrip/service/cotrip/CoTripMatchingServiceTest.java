@@ -1,11 +1,15 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.event.EventPublisher;
+import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.base.model.GenericId;
+import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.model.user.UserId;
+import cn.leansd.cotrip.service.cotrip.CoTripMatchingService;
+import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

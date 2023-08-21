@@ -1,6 +1,6 @@
 package cn.leansd.cotrip.service;
 
-import cn.leansd.geo.location.Location;
+import cn.leansd.geo.Location;
 
 public class TestMap {
     public static Location hqStationSouth = new Location(31.19346,121.32074); //虹桥火车站南出站口

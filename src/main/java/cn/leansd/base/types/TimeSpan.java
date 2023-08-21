@@ -1,7 +1,9 @@
-package cn.leansd.geo.location;
+package cn.leansd.base.types;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Embeddable
 @Data
@@ -9,7 +11,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Location {
-    private double latitude;
-    private double longitude;
+public class TimeSpan {
+    LocalDateTime start;
+    LocalDateTime end;
 }

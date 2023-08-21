@@ -1,6 +1,7 @@
 package cn.leansd.cotrip.model.plan;
 
-import cn.leansd.geo.location.Location;
+import cn.leansd.base.types.TimeSpan;
+import cn.leansd.geo.Location;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,6 +1,6 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.cotrip.service.cotrip;
 
-import cn.leansd.cotrip.model.plan.TimeSpan;
+import cn.leansd.base.types.TimeSpan;
 
 public class TimeSpanMatcher {
     /**

@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.service;
+package cn.leansd.cotrip.service.plan;
 
 import cn.leansd.base.event.EventPublisher;
 import cn.leansd.cotrip.model.plan.*;
