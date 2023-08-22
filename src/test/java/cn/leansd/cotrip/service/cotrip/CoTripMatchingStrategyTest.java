@@ -63,7 +63,7 @@ public class CoTripMatchingStrategyTest {
 
     private void verifyCoTripCreatedEventPublished() {
         ArgumentCaptor<CoTripCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(CoTripCreatedEvent.class);
-        verify(eventPublisher).publishEvent(argumentCaptor.capture());
+        verify(eventPublisher).publishEvent(any(), argumentCaptor.capture());
         CoTripCreatedEvent capturedEvent = argumentCaptor.getValue();
         assertNotNull(capturedEvent);
     }

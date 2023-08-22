@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import static cn.leansd.base.RestTemplateUtil.buildHeaderWithUserId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static cn.leansd.cotrip.service.TestMap.*;
 
@@ -69,7 +71,7 @@ public class TripPlanServiceTest {
 
     private void verifyTripPlanEventPublished(String tripPlanId) {
         ArgumentCaptor<TripPlanCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(TripPlanCreatedEvent.class);
-        verify(eventPublisher).publishEvent(argumentCaptor.capture());
+        verify(eventPublisher).publishEvent(any(), argumentCaptor.capture());
         TripPlanCreatedEvent capturedEvent = argumentCaptor.getValue();
         assertEquals(tripPlanId, capturedEvent.getData().getId());
     }
@@ -84,6 +86,6 @@ public class TripPlanServiceTest {
                 new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
                 TripPlanDTO.class);
 
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

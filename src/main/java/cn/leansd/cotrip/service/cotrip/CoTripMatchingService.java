@@ -11,6 +11,7 @@ import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ public class CoTripMatchingService {
     }
 
     @EventListener(TripPlanCreatedEvent.class)
+    @Transactional
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
         CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
@@ -49,7 +51,7 @@ public class CoTripMatchingService {
         tripPlanService.joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList().stream().map(
                 id-> TripPlanId.of(id)).collect(Collectors.toList()));
         coTripRepository.save(coTrip);
-        eventPublisher.publishEvent(new CoTripCreatedEvent(coTrip.getId()));
+        eventPublisher.publishEvent(coTrip,new CoTripCreatedEvent(coTrip.getId()));
     }
 
     private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {

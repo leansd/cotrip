@@ -1,8 +1,10 @@
 package cn.leansd.cotrip.model.cotrip;
 
+import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.DomainEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CoTrip extends DomainEntity {
+public class CoTrip extends AggregateRoot<CoTrip> {
     @ElementCollection
     List<String> tripPlanIdList;
 

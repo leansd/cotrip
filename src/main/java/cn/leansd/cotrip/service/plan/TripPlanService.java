@@ -7,6 +7,7 @@ import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.base.model.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +23,13 @@ public class TripPlanService {
         this.eventPublisher = eventPublisher;
     }
 
+    @Transactional
     public TripPlanDTO createTripPlan(TripPlanDTO tripPlanDTO, UserId creatorId) {
         PlanSpecification spec = tripPlanDTO.getPlanSpecification();
         TripPlan tripPlan = new TripPlan(creatorId,
                 spec);
         tripPlanRepository.save(tripPlan);
-        eventPublisher.publishEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
+        eventPublisher.publishEvent(tripPlan, new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
         return TripPlanConverter.toDTO(tripPlan);
     }
 
