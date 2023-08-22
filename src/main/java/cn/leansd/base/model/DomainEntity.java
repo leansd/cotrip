@@ -2,11 +2,13 @@ package cn.leansd.base.model;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Data;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
+@Data
 public abstract class DomainEntity {
     @Id
     private String id;

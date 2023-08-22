@@ -4,7 +4,9 @@ import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.base.model.GenericId;
 import cn.leansd.base.types.TimeSpan;
+import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
+import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.base.model.UserId;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static cn.leansd.cotrip.service.TestMap.*;
+import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -62,14 +66,15 @@ public class CoTripMatchingStrategyTest {
     }
 
     private void verifyCoTripCreatedEventPublished() {
-        ArgumentCaptor<CoTripCreatedEvent> argumentCaptor = ArgumentCaptor.forClass(CoTripCreatedEvent.class);
-        verify(eventPublisher).publishEvent(any(), argumentCaptor.capture());
-        CoTripCreatedEvent capturedEvent = argumentCaptor.getValue();
-        assertNotNull(capturedEvent);
+        ArgumentCaptor<CoTrip> coTripArgumentCaptor= ArgumentCaptor.forClass(CoTrip.class);
+        verify(coTripRepository).save(coTripArgumentCaptor.capture());
+        CoTrip capturedCoTrip = coTripArgumentCaptor.getValue();
+        assertNotNull(capturedCoTrip);
+        assertEquals(1,capturedCoTrip.domainEvents().size());
     }
 
     private void verifyNoCoTripCreatedEventPublished() {
-        Mockito.verifyNoInteractions(eventPublisher);
+        Mockito.verifyNoInteractions(coTripRepository);
     }
 
 

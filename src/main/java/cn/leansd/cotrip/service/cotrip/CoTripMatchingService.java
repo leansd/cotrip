@@ -2,15 +2,12 @@ package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.exception.InconsistentStatusException;
-import cn.leansd.base.model.GenericId;
 import cn.leansd.cotrip.model.cotrip.*;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +52,6 @@ public class CoTripMatchingService {
         coTrip.getTripPlanIdList().add(thePlanId);
         tripPlanService.joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList().stream().map(
                 id-> TripPlanId.of(id)).collect(Collectors.toList()));
-        eventPublisher.publishEvent(coTrip,new CoTripCreatedEvent(coTrip.getId()));
         coTripRepository.save(coTrip);
     }
 
@@ -68,11 +64,7 @@ public class CoTripMatchingService {
             if (exceedMaxSeats(plan, tripPlan)) continue;
             if (startLocationNotMatch(plan, tripPlan)) continue;
             if (endLocationNotMatch(plan, tripPlan)) continue;
-            return CoTrip.builder()
-                    .status(CoTripStatus.CREATED)
-                    .tripPlanIdList(tripPlans.stream().map(TripPlan::getId)
-                            .collect(Collectors.toList()))
-                    .build();
+            return CoTripFactory.build(tripPlans);
         }
         return null;
     }

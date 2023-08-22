@@ -29,7 +29,7 @@ public abstract class AggregateRoot extends DomainEntity {
     }
 
     @DomainEvents
-    protected Collection<Object> domainEvents() {
+    public Collection<Object> domainEvents() {
         return Collections.unmodifiableList(this.domainEvents);
     }
 }
