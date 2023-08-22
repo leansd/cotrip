@@ -1,5 +1,6 @@
 package cn.leansd.cotrip.controller;
 
+import cn.leansd.base.exception.RequestedResourceNotFound;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.model.plan.TripPlanId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
@@ -28,7 +29,7 @@ public class TripPlanController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TripPlanDTO> retrieveTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) {
+    public ResponseEntity<TripPlanDTO> retrieveTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) throws RequestedResourceNotFound {
         TripPlanDTO tripPlan = tripPlanService.retrieveTripPlan(TripPlanId.of(id),UserId.of(session.getUserId()));
         return new ResponseEntity<>(tripPlan, HttpStatus.OK);
     }
