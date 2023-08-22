@@ -36,4 +36,9 @@ public class TripPlanService {
             tripPlanRepository.save(tripPlan);
         });
     }
+
+    public TripPlanDTO retrieveTripPlan(TripPlanId tripPlanId, UserId userId) {
+        TripPlan tripPlan = tripPlanRepository.findById(tripPlanId.getId()).get();
+        return TripPlanConverter.toDTO(tripPlan);
+    }
 }

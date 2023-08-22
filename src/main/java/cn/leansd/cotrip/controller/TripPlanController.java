@@ -1,6 +1,7 @@
 package cn.leansd.cotrip.controller;
 
 import cn.leansd.base.model.UserId;
+import cn.leansd.cotrip.model.plan.TripPlanId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.base.session.SessionDTO;
@@ -24,5 +25,11 @@ public class TripPlanController {
     public ResponseEntity<TripPlanDTO> createTripPlan(@RequestBody TripPlanDTO tripPlanDTO, @UserSession SessionDTO session) {
         TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO,UserId.of(session.getUserId()));
         return new ResponseEntity<>(createdTripPlan, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TripPlanDTO> retrieveTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) {
+        TripPlanDTO tripPlan = tripPlanService.retrieveTripPlan(TripPlanId.of(id),UserId.of(session.getUserId()));
+        return new ResponseEntity<>(tripPlan, HttpStatus.OK);
     }
 }

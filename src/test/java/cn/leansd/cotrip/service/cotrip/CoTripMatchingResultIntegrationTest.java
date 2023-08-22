@@ -1,6 +1,5 @@
 package cn.leansd.cotrip.service.cotrip;
 
-import cn.leansd.base.model.GenericId;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.cotrip.CoTrip;
@@ -17,16 +16,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
-import static cn.leansd.base.session.HttpTest.USER_ID_HEADER;
+import static cn.leansd.base.RestTemplateUtil.buildHeaderWithUserId;
 import static cn.leansd.cotrip.service.TestMap.orientalPear;
 import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,32 +57,46 @@ public class CoTripMatchingResultIntegrationTest {
         TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(USER_ID_HEADER, "user-id-1");
-        ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(firstPlan, headers), TripPlanDTO.class);
+        ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
         assertThat(response_1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         firstTripPlan = response_1.getBody();
 
-        headers.set(USER_ID_HEADER, "user-id-2");
-        ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(secondPlan, headers), TripPlanDTO.class);
+        ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(secondPlan, buildHeaderWithUserId("user-id-2")), TripPlanDTO.class);
         assertThat(response_2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         secondTripPlan = response_2.getBody();
     }
 
-    @DisplayName("匹配成功后应该更新TripPlan的状态")
+
+
+    @DisplayName("匹配成功后应该更新TripPlan的状态(数据库验证)")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatched() {
+    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByDb() {
         TripPlan savedExistingPlan = tripPlanRepository.findById(firstTripPlan.getId()).orElse(null);
         TripPlan savedNewPlan = tripPlanRepository.findById(secondTripPlan.getId()).orElse(null);
         assertThat(savedExistingPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
         assertThat(savedNewPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
     }
 
-    @DisplayName("匹配成功后应该创建CoTrip，状态应该是CREATED")
+    @DisplayName("匹配成功后应该更新TripPlan的状态(接口验证)")
     @Test
-    public void shouldCreateCoTripWhenMatched() {
-        CoTrip savedCoTrip = coTripRepository.findFirstByOrderByCreatedAtDesc();
-        assertThat(savedCoTrip).isNotNull();
-        assertThat(savedCoTrip.getStatus()).isEqualTo(CoTripStatus.CREATED);
+    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByAPI() {
+        ResponseEntity<TripPlanDTO> response =  restTemplate.exchange(
+                "/trip-plan/" + firstTripPlan.getId(),
+                HttpMethod.GET,
+                new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
+                TripPlanDTO.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        TripPlanDTO tripPlanDTO = response.getBody();
+        assertThat(tripPlanDTO.getStatus()).isEqualTo(TripPlanStatus.JOINED.toString());
+
+        response = restTemplate.exchange(
+                "/trip-plan/" + secondTripPlan.getId(),
+                HttpMethod.GET,
+                new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
+                TripPlanDTO.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        tripPlanDTO = response.getBody();
+        assertThat(tripPlanDTO.getStatus()).isEqualTo(TripPlanStatus.JOINED.toString());
     }
+
 }
