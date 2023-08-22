@@ -10,7 +10,8 @@ import java.util.UUID;
 public abstract class DomainEntity {
     @Id
     private String id;
-
+    private String createdBy;
+    private long createdTime;
     protected DomainEntity() {
         this.id = UUID.randomUUID().toString();
     }
@@ -34,5 +35,10 @@ public abstract class DomainEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    protected void addCreationInfo(UserId createdBy) {
+        this.createdBy = createdBy.getId();
+        this.createdTime = System.currentTimeMillis();
     }
 }

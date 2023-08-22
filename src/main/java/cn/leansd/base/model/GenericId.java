@@ -4,21 +4,21 @@ import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 public class GenericId {
-    private String value;
+    private String id;
 
-    public GenericId(String value) {
-        this.value = Objects.requireNonNull(value);
+    public GenericId(String id) {
+        this.id = Objects.requireNonNull(id);
     }
-    public String getValue() {
-        return value;
+    public String getId() {
+        return id;
     }
 
     /** 适用于所有Id对象的通用builder */
-    public static GenericId of(Class<? extends GenericId> type, String value) {
+    public static GenericId of(Class<? extends GenericId> type, String id) {
         try {
             Constructor<? extends GenericId> constructor = type.getDeclaredConstructor(String.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(value);
+            return constructor.newInstance(id);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create instance", e);
         }
@@ -29,12 +29,12 @@ public class GenericId {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GenericId genericId = (GenericId) o;
-        return Objects.equals(value, genericId.value);
+        return Objects.equals(id, genericId.id);
     }
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : 0;
+        return id != null ? id.hashCode() : 0;
     }
 
     /**

@@ -1,4 +1,4 @@
-package cn.leansd.user.session;
+package cn.leansd.base.session;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

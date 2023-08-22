@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.model.user;
+package cn.leansd.base.model;
 import cn.leansd.base.model.GenericId;
 import jakarta.persistence.Embeddable;
 import lombok.NoArgsConstructor;

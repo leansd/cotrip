@@ -1,4 +1,4 @@
-package cn.leansd.geo;
+package cn.leansd.geo.haversine;
 
 public class HaversineDistance {
     public static double between(double lat1, double lon1, double lat2, double lon2) {

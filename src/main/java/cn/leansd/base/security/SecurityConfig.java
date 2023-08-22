@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.config;
+package cn.leansd.base.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,17 +6,18 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
-@Profile("dev")
-public class NoSecurityConfig  {
+@Profile("default")
+public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().anyRequest().permitAll()
-                .and()
-                .headers().frameOptions().disable();
+                .authorizeRequests().anyRequest().authenticated();
+        http.oauth2ResourceServer().jwt();
+        http.sessionManagement().sessionCreationPolicy(STATELESS);
         return http.build();
     }
 }

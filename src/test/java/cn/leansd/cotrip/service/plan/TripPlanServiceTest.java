@@ -4,9 +4,10 @@ import cn.leansd.base.model.GenericId;
 import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.plan.*;
-import cn.leansd.cotrip.model.user.UserId;
-import cn.leansd.cotrip.service.plan.TripPlanDTO;
-import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.base.model.UserId;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,17 @@ public class TripPlanServiceTest {
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
-        TripPlan tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
+        String json = null;
+        try {
+            json = objectMapper.writeValueAsString(tripPlanDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(json);
+        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
         verifyTripPlanCreated(tripPlan.getId());
         verifyTripPlanEventPublished(tripPlan.getId());
     }

@@ -1,5 +1,7 @@
-package cn.leansd.geo;
+package cn.leansd.geo.haversine;
 
+import cn.leansd.geo.GeoService;
+import cn.leansd.geo.Location;
 import org.springframework.stereotype.Service;
 
 @Service

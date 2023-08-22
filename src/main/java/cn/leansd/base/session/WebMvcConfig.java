@@ -1,4 +1,4 @@
-package cn.leansd.user.session;
+package cn.leansd.base.session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

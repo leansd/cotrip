@@ -1,4 +1,4 @@
-package cn.leansd.user.session;
+package cn.leansd.base.session;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
