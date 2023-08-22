@@ -25,4 +25,7 @@ public class TripPlanService {
         tripPlanRepository.save(tripPlan);
         return TripPlanConverter.toDTO(tripPlan);
     }
+
+    public void joinedCoTrip(TripPlanId tripPlanId) {
+    }
 }

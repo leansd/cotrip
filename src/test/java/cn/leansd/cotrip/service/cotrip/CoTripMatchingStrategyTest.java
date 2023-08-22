@@ -9,6 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,6 @@ import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static cn.leansd.cotrip.service.TestMap.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,9 +26,11 @@ import static org.mockito.Mockito.*;
 
 public class CoTripMatchingStrategyTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
+    TripPlanService tripPlanService = Mockito.mock(TripPlanService.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
     EventPublisher eventPublisher = Mockito.mock(EventPublisher.class);
     GeoService geoService = Mockito.mock(GeoService.class);
+
 
     LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
     LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
@@ -39,7 +41,7 @@ public class CoTripMatchingStrategyTest {
 
     @BeforeEach
     public void setUp(){
-        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService, eventPublisher);
+        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService,coTripRepository, geoService, eventPublisher);
     }
 
     @DisplayName("时间地点完全相同可以匹配")

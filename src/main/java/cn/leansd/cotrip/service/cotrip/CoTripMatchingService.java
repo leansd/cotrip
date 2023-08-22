@@ -6,11 +6,9 @@ import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.cotrip.CoTripStatus;
-import cn.leansd.cotrip.model.plan.TripPlan;
-import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
-import cn.leansd.cotrip.model.plan.TripPlanRepository;
-import cn.leansd.cotrip.model.plan.TripPlanStatus;
+import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -26,12 +24,15 @@ public class CoTripMatchingService {
     private final CoTripRepository coTripRepository;
     private final EventPublisher eventPublisher;
     private final GeoService geoService;
+    private final TripPlanService tripPlanService;
     @Autowired
     public CoTripMatchingService(TripPlanRepository tripPlanRepository,
+                                 TripPlanService tripPlanService,
                                  CoTripRepository coTripRepository,
                                  GeoService geoService,
                                  EventPublisher eventPublisher) {
         this.tripPlanRepository = tripPlanRepository;
+        this.tripPlanService = tripPlanService;
         this.coTripRepository = coTripRepository;
         this.geoService = geoService;
         this.eventPublisher = eventPublisher;
@@ -47,11 +48,9 @@ public class CoTripMatchingService {
 
     private void matchSuccess(CoTrip coTrip) {
         coTripRepository.save(coTrip);
+        System.out.println(coTrip.getTripPlanIdList());
         coTrip.getTripPlanIdList().forEach(tripPlanId -> {
-            System.out.println(tripPlanId);
-            TripPlan tripPlan = tripPlanRepository.findById(tripPlanId).get();
-            tripPlan.setStatus(TripPlanStatus.JOINED);
-            tripPlanRepository.save(tripPlan);
+            tripPlanService.joinedCoTrip((TripPlanId)TripPlanId.of(TripPlanId.class,tripPlanId));
         });
         eventPublisher.publishEvent(new CoTripCreatedEvent(coTrip.getId()));
     }

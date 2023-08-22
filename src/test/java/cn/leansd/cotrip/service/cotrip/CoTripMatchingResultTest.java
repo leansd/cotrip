@@ -9,6 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 public class CoTripMatchingResultTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
+    TripPlanService tripPlanService = Mockito.mock(TripPlanService.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
     EventPublisher eventPublisher = Mockito.mock(EventPublisher.class);
     GeoService geoService = Mockito.mock(GeoService.class);
@@ -38,7 +40,7 @@ public class CoTripMatchingResultTest {
 
     @BeforeEach
     public void setUp(){
-        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService, eventPublisher);
+        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService, coTripRepository, geoService, eventPublisher);
     }
 
     @DisplayName("匹配成功后应该更新TripPlan的状态")
@@ -55,10 +57,10 @@ public class CoTripMatchingResultTest {
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
 
-        ArgumentCaptor<TripPlan> argumentCaptor= ArgumentCaptor.forClass(TripPlan.class);
-        verify(tripPlanRepository).save(argumentCaptor.capture());
-        TripPlan capturedTripPlan = argumentCaptor.getValue();
-        assertEquals(TripPlanStatus.JOINED,capturedTripPlan.getStatus());
+        ArgumentCaptor<TripPlanId> argumentCaptor= ArgumentCaptor.forClass(TripPlanId.class);
+        verify(tripPlanService).joinedCoTrip(argumentCaptor.capture());
+        TripPlanId capturedTripPlan = argumentCaptor.getValue();
+        assertEquals(existingPlan.getId(),capturedTripPlan.getId());
     }
 
 }
