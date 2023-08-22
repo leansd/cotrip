@@ -5,8 +5,9 @@ import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.base.model.GenericId;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
+import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
+import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
@@ -19,8 +20,8 @@ import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Optional;
-
+import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 import static cn.leansd.cotrip.service.TestMap.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -37,30 +38,46 @@ public class CoTripMatchingResultTest {
     LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
 
     CoTripMatchingService coTripMatchingService = null;
-
+    TripPlan existingPlan  = null;
+    TripPlan newPlan = null;
     @BeforeEach
     public void setUp(){
         coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService, coTripRepository, geoService, eventPublisher);
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
+                .start(Y2305010800)
+                .end(Y2305010830)
+                .build(),1));
+        existingPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+                tripPlanDTO.getPlanSpecification());
+        newPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+                tripPlanDTO.getPlanSpecification());
+        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
     }
 
     @DisplayName("匹配成功后应该更新TripPlan的状态")
     @Test
     public void shouldChangeTripPlanStatusWhenMatched() throws InconsistentStatusException {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
-                .start(Y2305010800)
-                .end(Y2305010830)
-                .build(),1));
-        TripPlan existingPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
-                tripPlanDTO.getPlanSpecification());
-        TripPlan newPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
-                tripPlanDTO.getPlanSpecification());
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
+        ArgumentCaptor<List<TripPlanId>> argumentCaptor= ArgumentCaptor.forClass(List.class);
+        verify(tripPlanService).joinedCoTrip(argumentCaptor.capture());
+        List<TripPlanId> capturedTripPlan = argumentCaptor.getValue();
+        assertThat(capturedTripPlan).containsExactlyInAnyOrderElementsOf(
+                Arrays.asList(
+                        (TripPlanId) GenericId.of(TripPlanId.class,existingPlan.getId()),
+                        (TripPlanId) GenericId.of(TripPlanId.class,newPlan.getId())
+        ));
+    }
+
+    @DisplayName("匹配成功后应该创建CoTrip，状态应该是CREATED")
+    @Test
+    public void shouldCreateCoTripWhenMatched() throws InconsistentStatusException {
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
 
-        ArgumentCaptor<TripPlanId> argumentCaptor= ArgumentCaptor.forClass(TripPlanId.class);
-        verify(tripPlanService).joinedCoTrip(argumentCaptor.capture());
-        TripPlanId capturedTripPlan = argumentCaptor.getValue();
-        assertEquals(existingPlan.getId(),capturedTripPlan.getId());
+        ArgumentCaptor<CoTrip> argumentCaptor= ArgumentCaptor.forClass(CoTrip.class);
+        verify(coTripRepository).save(argumentCaptor.capture());
+        CoTrip capturedCoTrip = argumentCaptor.getValue();
+        assertThat(capturedCoTrip).isNotNull();
+        assertThat(capturedCoTrip.getStatus()).isEqualTo(CoTripStatus.CREATED);
     }
 
 }

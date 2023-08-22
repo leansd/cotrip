@@ -2,6 +2,7 @@ package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.exception.InconsistentStatusException;
+import cn.leansd.base.model.GenericId;
 import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
@@ -42,16 +43,15 @@ public class CoTripMatchingService {
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
         CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
-            matchSuccess(coTrip);
+            matchSuccess(event.getData().getId(),coTrip);
         }
     }
 
-    private void matchSuccess(CoTrip coTrip) {
+    private void matchSuccess(String thePlanId, CoTrip coTrip) {
+        coTrip.getTripPlanIdList().add(thePlanId);
+        tripPlanService.joinedCoTrip(coTrip.getTripPlanIdList().stream().map(
+                id->(TripPlanId) GenericId.of(TripPlanId.class,id)).collect(Collectors.toList()));
         coTripRepository.save(coTrip);
-        System.out.println(coTrip.getTripPlanIdList());
-        coTrip.getTripPlanIdList().forEach(tripPlanId -> {
-            tripPlanService.joinedCoTrip((TripPlanId)TripPlanId.of(TripPlanId.class,tripPlanId));
-        });
         eventPublisher.publishEvent(new CoTripCreatedEvent(coTrip.getId()));
     }
 

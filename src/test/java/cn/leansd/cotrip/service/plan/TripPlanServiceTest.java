@@ -45,17 +45,7 @@ public class TripPlanServiceTest {
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        String json = null;
-        try {
-            json = objectMapper.writeValueAsString(tripPlanDTO);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(json);
-        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
+      TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
         verifyTripPlanCreated(tripPlan.getId());
         verifyTripPlanEventPublished(tripPlan.getId());
     }

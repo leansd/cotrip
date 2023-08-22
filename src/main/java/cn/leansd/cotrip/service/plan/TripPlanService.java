@@ -6,6 +6,8 @@ import cn.leansd.base.model.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TripPlanService {
     private final TripPlanRepository tripPlanRepository;
@@ -26,6 +28,6 @@ public class TripPlanService {
         return TripPlanConverter.toDTO(tripPlan);
     }
 
-    public void joinedCoTrip(TripPlanId tripPlanId) {
+    public void joinedCoTrip(List<TripPlanId> tripPlanIds) {
     }
 }
