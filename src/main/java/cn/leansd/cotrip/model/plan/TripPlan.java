@@ -23,4 +23,7 @@ public class TripPlan extends DomainEntity {
     @Enumerated(EnumType.STRING)
     private TripPlanStatus status;
 
+    public void joinedCoTrip() {
+        this.status = TripPlanStatus.JOINED;
+    }
 }

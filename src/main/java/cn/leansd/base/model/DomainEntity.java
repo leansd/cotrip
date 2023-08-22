@@ -11,7 +11,7 @@ public abstract class DomainEntity {
     @Id
     private String id;
     private String createdBy;
-    private long createdTime;
+    private long createdAt;
     protected DomainEntity() {
         this.id = UUID.randomUUID().toString();
     }
@@ -39,6 +39,6 @@ public abstract class DomainEntity {
 
     protected void addCreationInfo(UserId createdBy) {
         this.createdBy = createdBy.getId();
-        this.createdTime = System.currentTimeMillis();
+        this.createdAt = System.currentTimeMillis();
     }
 }

@@ -9,11 +9,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-@Profile("default")
-public class WebMvcConfig implements WebMvcConfigurer {
+@Profile("dev")
+public class DevEnvWebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
-    private UserSessionArgumentResolver userSessionArgumentResolver;
+    private DevUserSessionArgumentResolver userSessionArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

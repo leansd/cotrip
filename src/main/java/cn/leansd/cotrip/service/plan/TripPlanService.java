@@ -23,11 +23,17 @@ public class TripPlanService {
         PlanSpecification spec = tripPlanDTO.getPlanSpecification();
         TripPlan tripPlan = new TripPlan(creatorId,
                 spec);
-        eventPublisher.publishEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
         tripPlanRepository.save(tripPlan);
+        eventPublisher.publishEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
         return TripPlanConverter.toDTO(tripPlan);
     }
 
     public void joinedCoTrip(List<TripPlanId> tripPlanIds) {
+        tripPlanIds.forEach(tripPlanId -> {
+
+            TripPlan tripPlan = tripPlanRepository.findById(tripPlanId.getId()).get();
+            tripPlan.joinedCoTrip();
+            tripPlanRepository.save(tripPlan);
+        });
     }
 }
