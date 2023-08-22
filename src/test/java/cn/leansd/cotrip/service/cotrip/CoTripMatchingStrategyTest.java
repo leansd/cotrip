@@ -24,7 +24,7 @@ import static cn.leansd.cotrip.service.TestMap.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-public class CoTripMatchingServiceTest {
+public class CoTripMatchingStrategyTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
     EventPublisher eventPublisher = Mockito.mock(EventPublisher.class);
@@ -54,7 +54,6 @@ public class CoTripMatchingServiceTest {
         TripPlan newPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
                 tripPlanDTO.getPlanSpecification());
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
-        when(tripPlanRepository.findById(newPlan.getId())).thenReturn(Optional.of(newPlan));
 
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
         verifyCoTripCreatedEventPublished();

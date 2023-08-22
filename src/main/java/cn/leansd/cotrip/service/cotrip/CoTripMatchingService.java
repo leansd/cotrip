@@ -9,6 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.cotrip.model.plan.TripPlan;
 import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
+import cn.leansd.cotrip.model.plan.TripPlanStatus;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,19 @@ public class CoTripMatchingService {
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
         CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
-            coTripRepository.save(coTrip);
-            eventPublisher.publishEvent(new CoTripCreatedEvent(coTrip.getId()));
+            matchSuccess(coTrip);
         }
+    }
+
+    private void matchSuccess(CoTrip coTrip) {
+        coTripRepository.save(coTrip);
+        coTrip.getTripPlanIdList().forEach(tripPlanId -> {
+            System.out.println(tripPlanId);
+            TripPlan tripPlan = tripPlanRepository.findById(tripPlanId).get();
+            tripPlan.setStatus(TripPlanStatus.JOINED);
+            tripPlanRepository.save(tripPlan);
+        });
+        eventPublisher.publishEvent(new CoTripCreatedEvent(coTrip.getId()));
     }
 
     private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {
