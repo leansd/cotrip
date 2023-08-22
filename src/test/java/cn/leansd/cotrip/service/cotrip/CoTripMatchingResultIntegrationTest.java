@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.service.plan;
+package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.model.GenericId;
 import cn.leansd.base.model.UserId;
@@ -10,6 +10,7 @@ import cn.leansd.cotrip.model.plan.PlanSpecification;
 import cn.leansd.cotrip.model.plan.TripPlan;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
 import cn.leansd.cotrip.model.plan.TripPlanStatus;
+import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,9 +54,9 @@ public class CoTripMatchingResultIntegrationTest {
                 .start(Y2305010800)
                 .end(Y2305010830)
                 .build(),1));
-        TripPlan firstPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan firstPlan = new TripPlan(UserId.of("user_id_1"),
                 tripPlanDTO.getPlanSpecification());
-        TripPlan secondPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
 
         HttpHeaders headers = new HttpHeaders();

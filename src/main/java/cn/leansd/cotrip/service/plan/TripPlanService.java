@@ -1,6 +1,7 @@
 package cn.leansd.cotrip.service.plan;
 
 import cn.leansd.base.event.EventPublisher;
+import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.base.model.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,10 @@ public class TripPlanService {
         return TripPlanConverter.toDTO(tripPlan);
     }
 
-    public void joinedCoTrip(List<TripPlanId> tripPlanIds) {
+    public void joinedCoTrip(CoTripId coTripId, List<TripPlanId> tripPlanIds) {
         tripPlanIds.forEach(tripPlanId -> {
-
             TripPlan tripPlan = tripPlanRepository.findById(tripPlanId.getId()).get();
-            tripPlan.joinedCoTrip();
+            tripPlan.joinedCoTrip(coTripId);
             tripPlanRepository.save(tripPlan);
         });
     }

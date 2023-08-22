@@ -51,9 +51,9 @@ public class CoTripMatchingStrategyTest {
                 .start(Y2305010800)
                 .end(Y2305010830)
                 .build(),1));
-        TripPlan existingPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan existingPlan = new TripPlan(UserId.of("user_id_1"),
                 tripPlanDTO.getPlanSpecification());
-        TripPlan newPlan = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan newPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
 
@@ -84,7 +84,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010830)
                         .build(),1);
 
-        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
@@ -95,7 +95,7 @@ public class CoTripMatchingStrategyTest {
                         .start(Y2305010831)
                         .end(Y2305010900)
                         .build(),1);
-        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
                 specB);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
         verifyNoCoTripCreatedEventPublished();
@@ -112,7 +112,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010830)
                         .build(),3);
 
-        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
@@ -123,7 +123,7 @@ public class CoTripMatchingStrategyTest {
                         .start(Y2305010830)
                         .end(Y2305010900)
                         .build(),1);
-        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
                 specB);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
         verifyCoTripCreatedEventPublished();
@@ -140,7 +140,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010830)
                         .build(),3);
 
-        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
@@ -151,7 +151,7 @@ public class CoTripMatchingStrategyTest {
                         .start(Y2305010830)
                         .end(Y2305010900)
                         .build(),2);
-        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
                 specB);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
 
@@ -169,7 +169,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010830)
                         .build(),1);
 
-        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
@@ -180,7 +180,7 @@ public class CoTripMatchingStrategyTest {
                         .start(Y2305010830)
                         .end(Y2305010900)
                         .build(),1);
-        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
                 specB);
         Mockito.when(geoService.getDistance(orientalPear, hqAirport)).thenReturn(21.0);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
@@ -198,7 +198,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010830)
                         .build(),1);
 
-        TripPlan existingPlanA = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_1"),
+        TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
@@ -209,7 +209,7 @@ public class CoTripMatchingStrategyTest {
                         .start(Y2305010830)
                         .end(Y2305010900)
                         .build(),1);
-        TripPlan newPlanB = new TripPlan((UserId) GenericId.of(UserId.class,"user_id_2"),
+        TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
                 specB);
         Mockito.when(geoService.getDistance(orientalPear, oceanAquarium)).thenReturn(0.5);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));

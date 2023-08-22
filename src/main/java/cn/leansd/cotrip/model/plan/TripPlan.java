@@ -2,6 +2,7 @@ package cn.leansd.cotrip.model.plan;
 
 import cn.leansd.base.model.DomainEntity;
 import cn.leansd.base.model.UserId;
+import cn.leansd.cotrip.model.cotrip.CoTripId;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +24,14 @@ public class TripPlan extends DomainEntity {
     @Enumerated(EnumType.STRING)
     private TripPlanStatus status;
 
-    public void joinedCoTrip() {
+    public void joinedCoTrip(CoTripId coTripId) {
+        this.coTripId = coTripId;
         this.status = TripPlanStatus.JOINED;
     }
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "id", column = @Column(name = "cotrip_id")),
+    })
+    private CoTripId coTripId;
 }

@@ -9,4 +9,8 @@ public class UserId extends GenericId {
     public UserId(String value) {
         super(value);
     }
+
+    public static UserId of(String userId) {
+        return new UserId(userId);
+    }
 }

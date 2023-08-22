@@ -45,7 +45,7 @@ public class TripPlanServiceTest {
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));
-      TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, (UserId) GenericId.of(UserId.class,"user_1"));
+      TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, UserId.of("user_1"));
         verifyTripPlanCreated(tripPlan.getId());
         verifyTripPlanEventPublished(tripPlan.getId());
     }

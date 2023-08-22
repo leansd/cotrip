@@ -22,7 +22,7 @@ public class TripPlanController {
 
     @PostMapping
     public ResponseEntity<TripPlanDTO> createTripPlan(@RequestBody TripPlanDTO tripPlanDTO, @UserSession SessionDTO session) {
-        TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO,(UserId) UserId.of(UserId.class,session.getUserId()));
+        TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO,UserId.of(session.getUserId()));
         return new ResponseEntity<>(createdTripPlan, HttpStatus.CREATED);
     }
 }

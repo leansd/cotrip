@@ -1,8 +1,11 @@
 package cn.leansd.base.model;
 
+import jakarta.persistence.Embeddable;
+
 import java.lang.reflect.Constructor;
 import java.util.Objects;
 
+@Embeddable
 public class GenericId {
     private String id;
 
@@ -11,17 +14,6 @@ public class GenericId {
     }
     public String getId() {
         return id;
-    }
-
-    /** 适用于所有Id对象的通用builder */
-    public static GenericId of(Class<? extends GenericId> type, String id) {
-        try {
-            Constructor<? extends GenericId> constructor = type.getDeclaredConstructor(String.class);
-            constructor.setAccessible(true);
-            return constructor.newInstance(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create instance", e);
-        }
     }
 
     @Override

@@ -9,4 +9,7 @@ public class TripPlanId extends GenericId {
     public TripPlanId(String value) {
         super(value);
     }
+    public static TripPlanId of(String id) {
+        return new TripPlanId(id);
+    }
 }
