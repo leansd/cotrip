@@ -1,7 +1,6 @@
 package cn.leansd.cotrip.model.plan;
 
 import cn.leansd.base.model.AggregateRoot;
-import cn.leansd.base.model.DomainEntity;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.model.cotrip.CoTripId;
 import jakarta.persistence.*;
@@ -11,7 +10,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TripPlan extends AggregateRoot<TripPlan> {
+public class TripPlan extends AggregateRoot {
     public TripPlan(UserId creatorId, PlanSpecification planSpecification) {
         this();
         this.planSpecification = planSpecification;

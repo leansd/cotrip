@@ -2,48 +2,34 @@ package cn.leansd.base.model;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.springframework.data.domain.AfterDomainEventPublication;
+import org.springframework.data.domain.DomainEvents;
+import org.springframework.util.Assert;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @MappedSuperclass
-public abstract class AggregateRoot<A extends AggregateRoot<A>> extends AbstractAggregateRoot<A>  {
-    @Id
-    private String id;
-    private String createdBy;
-    private long createdAt;
-    protected AggregateRoot() {
-        this.id = UUID.randomUUID().toString();
+public abstract class AggregateRoot extends DomainEntity {
+    @Transient
+    private final transient List<Object> domainEvents = new ArrayList();
+
+    public AggregateRoot() {
     }
 
-    public AggregateRoot(String id) {
-        this.id = id;
+    public void registerEvent(DomainEvent event) {
+        Assert.notNull(event, "Domain event must not be null");
+        this.domainEvents.add(event);
     }
 
-    public String getId() {
-        return id;
+    @AfterDomainEventPublication
+    protected void clearDomainEvents() {
+        this.domainEvents.clear();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AggregateRoot that = (AggregateRoot) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    protected void addCreationInfo(UserId createdBy) {
-        this.createdBy = createdBy.getId();
-        this.createdAt = System.currentTimeMillis();
-    }
-
-    public void registerDomainEvent(DomainEvent event){
-        this.registerEvent(event);
+    @DomainEvents
+    protected Collection<Object> domainEvents() {
+        return Collections.unmodifiableList(this.domainEvents);
     }
 }

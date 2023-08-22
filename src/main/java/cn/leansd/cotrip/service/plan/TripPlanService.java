@@ -28,8 +28,8 @@ public class TripPlanService {
         PlanSpecification spec = tripPlanDTO.getPlanSpecification();
         TripPlan tripPlan = new TripPlan(creatorId,
                 spec);
-        tripPlanRepository.save(tripPlan);
         eventPublisher.publishEvent(tripPlan, new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
+        tripPlanRepository.save(tripPlan);
         return TripPlanConverter.toDTO(tripPlan);
     }
 

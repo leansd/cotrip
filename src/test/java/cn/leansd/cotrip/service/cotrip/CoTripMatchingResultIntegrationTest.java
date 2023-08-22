@@ -2,9 +2,7 @@ package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
-import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.cotrip.model.plan.PlanSpecification;
 import cn.leansd.cotrip.model.plan.TripPlan;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
@@ -16,10 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.HttpEntity;
 
@@ -35,7 +33,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("dev")
 public class CoTripMatchingResultIntegrationTest {
     @Autowired

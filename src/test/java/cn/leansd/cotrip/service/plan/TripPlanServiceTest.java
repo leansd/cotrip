@@ -1,13 +1,9 @@
 package cn.leansd.cotrip.service.plan;
 
-import cn.leansd.base.model.GenericId;
 import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.base.model.UserId;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +15,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.mockito.ArgumentCaptor;
@@ -36,7 +31,6 @@ import static cn.leansd.cotrip.service.TestMap.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("dev")
 public class TripPlanServiceTest {
 

@@ -18,6 +18,6 @@ public class SpringEventPublisher implements EventPublisher {
 
     @Override
     public void publishEvent(AggregateRoot object, DomainEvent event) {
-        //object.registerDomainEvent(event);
+        object.registerEvent(event);
     }
 }

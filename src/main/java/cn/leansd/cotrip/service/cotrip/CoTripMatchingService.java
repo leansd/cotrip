@@ -10,11 +10,16 @@ import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.transaction.event.TransactionPhase.*;
 
 @Service
 public class CoTripMatchingService {
@@ -37,8 +42,8 @@ public class CoTripMatchingService {
         this.eventPublisher = eventPublisher;
     }
 
-    @EventListener(TripPlanCreatedEvent.class)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
         CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
@@ -50,8 +55,8 @@ public class CoTripMatchingService {
         coTrip.getTripPlanIdList().add(thePlanId);
         tripPlanService.joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList().stream().map(
                 id-> TripPlanId.of(id)).collect(Collectors.toList()));
-        coTripRepository.save(coTrip);
         eventPublisher.publishEvent(coTrip,new CoTripCreatedEvent(coTrip.getId()));
+        coTripRepository.save(coTrip);
     }
 
     private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {

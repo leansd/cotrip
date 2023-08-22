@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CoTrip extends AggregateRoot<CoTrip> {
+public class CoTrip extends AggregateRoot {
     @ElementCollection
     List<String> tripPlanIdList;
 
