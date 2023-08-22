@@ -30,7 +30,6 @@ public class CoTripMatchingResultTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
     TripPlanService tripPlanService = Mockito.mock(TripPlanService.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
-    EventPublisher eventPublisher = Mockito.mock(EventPublisher.class);
     GeoService geoService = Mockito.mock(GeoService.class);
 
     LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
@@ -41,7 +40,7 @@ public class CoTripMatchingResultTest {
     TripPlan newPlan = null;
     @BeforeEach
     public void setUp(){
-        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService, coTripRepository, geoService, eventPublisher);
+        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService, coTripRepository, geoService);
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)

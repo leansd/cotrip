@@ -15,20 +15,17 @@ import java.util.Optional;
 @Service
 public class TripPlanService {
     private final TripPlanRepository tripPlanRepository;
-    private final EventPublisher eventPublisher;
 
     @Autowired
-    public TripPlanService(TripPlanRepository tripPlanRepository, EventPublisher eventPublisher) {
+    public TripPlanService(TripPlanRepository tripPlanRepository) {
         this.tripPlanRepository = tripPlanRepository;
-        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public TripPlanDTO createTripPlan(TripPlanDTO tripPlanDTO, UserId creatorId) {
         PlanSpecification spec = tripPlanDTO.getPlanSpecification();
-        TripPlan tripPlan = new TripPlan(creatorId,
+        TripPlan tripPlan = TripPlanFactory.build(creatorId,
                 spec);
-        eventPublisher.publishEvent(tripPlan, new TripPlanCreatedEvent(TripPlanConverter.toDTO(tripPlan)));
         tripPlanRepository.save(tripPlan);
         return TripPlanConverter.toDTO(tripPlan);
     }

@@ -45,7 +45,7 @@ public class CoTripMatchingStrategyTest {
 
     @BeforeEach
     public void setUp(){
-        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService,coTripRepository, geoService, eventPublisher);
+        coTripMatchingService = new CoTripMatchingService(tripPlanRepository, tripPlanService,coTripRepository, geoService);
     }
 
     @DisplayName("时间地点完全相同可以匹配")
