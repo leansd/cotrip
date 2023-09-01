@@ -1,11 +1,13 @@
 package cn.leansd.cotrip.model.cotrip;
 
 import cn.leansd.base.model.AggregateRoot;
-import cn.leansd.base.model.DomainEntity;
 import cn.leansd.base.model.UserId;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.domain.AbstractAggregateRoot;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 

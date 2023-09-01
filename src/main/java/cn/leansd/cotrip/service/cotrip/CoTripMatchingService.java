@@ -1,8 +1,14 @@
 package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.exception.InconsistentStatusException;
-import cn.leansd.cotrip.model.cotrip.*;
-import cn.leansd.cotrip.model.plan.*;
+import cn.leansd.cotrip.model.cotrip.CoTrip;
+import cn.leansd.cotrip.model.cotrip.CoTripFactory;
+import cn.leansd.cotrip.model.cotrip.CoTripId;
+import cn.leansd.cotrip.model.cotrip.CoTripRepository;
+import cn.leansd.cotrip.model.plan.TripPlan;
+import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
+import cn.leansd.cotrip.model.plan.TripPlanId;
+import cn.leansd.cotrip.model.plan.TripPlanRepository;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
@@ -14,8 +20,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.transaction.event.TransactionPhase.*;
 
 @Service
 public class CoTripMatchingService {

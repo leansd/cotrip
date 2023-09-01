@@ -1,6 +1,5 @@
 package cn.leansd.cotrip.service.cotrip;
 
-import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
@@ -21,8 +20,10 @@ import org.mockito.Mockito;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import static cn.leansd.cotrip.service.TestMap.orientalPear;
+import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
-import static cn.leansd.cotrip.service.TestMap.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

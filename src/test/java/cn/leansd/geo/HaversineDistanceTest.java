@@ -3,7 +3,7 @@ package cn.leansd.geo;
 import cn.leansd.geo.haversine.HaversineDistance;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HaversineDistanceTest {
     @Test

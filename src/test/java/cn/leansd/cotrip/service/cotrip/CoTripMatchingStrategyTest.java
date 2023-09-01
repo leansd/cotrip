@@ -2,14 +2,11 @@ package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.exception.InconsistentStatusException;
-import cn.leansd.base.model.GenericId;
+import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.cotrip.CoTrip;
-import cn.leansd.cotrip.model.cotrip.CoTripCreatedEvent;
-import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
-import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
 import cn.leansd.geo.GeoService;
@@ -23,10 +20,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static cn.leansd.cotrip.service.TestMap.*;
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CoTripMatchingStrategyTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);

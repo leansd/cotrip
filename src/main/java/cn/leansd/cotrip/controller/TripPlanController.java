@@ -2,11 +2,11 @@ package cn.leansd.cotrip.controller;
 
 import cn.leansd.base.exception.RequestedResourceNotFound;
 import cn.leansd.base.model.UserId;
+import cn.leansd.base.session.SessionDTO;
+import cn.leansd.base.session.UserSession;
 import cn.leansd.cotrip.model.plan.TripPlanId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
-import cn.leansd.base.session.SessionDTO;
-import cn.leansd.base.session.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,6 @@ package cn.leansd.base.model;
 
 import jakarta.persistence.Embeddable;
 
-import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 @Embeddable

@@ -4,7 +4,9 @@ import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.model.cotrip.CoTripId;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
