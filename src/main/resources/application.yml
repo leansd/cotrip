@@ -14,4 +14,7 @@ spring:
           jwk-set-uri: http://localhost:8089/realms/emergent/protocol/openid-connect/certs
 logging:
   level:
-    org.springframework.context.event: DEBUG
+    org.springframework.context.event: INFO
+    org.springframework.web.socket: TRACE
+    org.springframework.web.messaging: TRACE
+    org.springframework.security: TRACE

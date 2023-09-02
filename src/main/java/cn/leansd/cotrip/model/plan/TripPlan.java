@@ -3,6 +3,7 @@ package cn.leansd.cotrip.model.plan;
 import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.model.cotrip.CoTripId;
+import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +30,7 @@ public class TripPlan extends AggregateRoot {
     public void joinedCoTrip(CoTripId coTripId) {
         this.coTripId = coTripId;
         this.status = TripPlanStatus.JOINED;
+        registerEvent(new TripPlanJoinedEvent(new TripPlanDTO(this)));
     }
 
     @Embedded

@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoTripFactory {
-    public static CoTrip build(List<TripPlan> tripPlans) {
-        CoTrip coTrip = new CoTrip(new ArrayList<>(
-                tripPlans.stream().map(TripPlan::getId).toList()));
+    public static CoTrip build(List<String> tripPlanIds) {
+        CoTrip coTrip = new CoTrip(tripPlanIds);
         coTrip.registerEvent(new CoTripCreatedEvent(coTrip.getId()));
         return coTrip;
     }

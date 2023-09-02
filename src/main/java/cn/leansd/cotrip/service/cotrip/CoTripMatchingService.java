@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,6 @@ public class CoTripMatchingService {
     }
 
     private void matchSuccess(String thePlanId, CoTrip coTrip) {
-        coTrip.getTripPlanIdList().add(thePlanId);
         tripPlanService.joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList().stream().map(
                 id-> TripPlanId.of(id)).collect(Collectors.toList()));
         coTripRepository.save(coTrip);
@@ -58,15 +58,19 @@ public class CoTripMatchingService {
     private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {
         List<TripPlan> tripPlans = tripPlanRepository.findAllNotMatching();
         if (tripPlans.size() == 0) return null;
+        List<String> matchedTripPlanIds = new ArrayList<>();
         for (TripPlan plan : tripPlans) {
             if (plan.getId().equals(tripPlan.getId())) continue;
             if (departureTimeNotMatch(plan, tripPlan)) continue;
             if (exceedMaxSeats(plan, tripPlan)) continue;
             if (startLocationNotMatch(plan, tripPlan)) continue;
             if (endLocationNotMatch(plan, tripPlan)) continue;
-            return CoTripFactory.build(tripPlans);
+            matchedTripPlanIds.add(plan.getId());
+            break; //当前阶段仅支持匹配一个
         }
-        return null;
+        if (matchedTripPlanIds.size() == 0) return null;
+        matchedTripPlanIds.add(tripPlan.getId());
+        return CoTripFactory.build(matchedTripPlanIds);
     }
 
     private boolean departureTimeNotMatch(TripPlan existPlan, TripPlanDTO newPlan) {
