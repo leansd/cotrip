@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.service.cotrip;
+package cn.leansd.base.ws;
 
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -11,13 +11,13 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
-public abstract class SocketSessionHandler implements StompSessionHandler {
+public abstract class SocketSessionClientHandler implements StompSessionHandler {
     private final AtomicReference<Throwable> failure;
     private final CountDownLatch latch;
     private final List<String> topics;
     private final Semaphore semaphore;
-    Logger logger = Logger.getLogger(SocketSessionHandler.class.getName());
-    public SocketSessionHandler(CountDownLatch latch, AtomicReference<Throwable> failure, List<String> topics, Semaphore sem) {
+    Logger logger = Logger.getLogger(SocketSessionClientHandler.class.getName());
+    public SocketSessionClientHandler(CountDownLatch latch, AtomicReference<Throwable> failure, List<String> topics, Semaphore sem) {
         this.latch = latch;
         this.failure = failure;
         this.topics = topics;

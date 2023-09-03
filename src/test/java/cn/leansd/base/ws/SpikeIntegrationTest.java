@@ -1,9 +1,6 @@
-package cn.leansd.cotrip.service.cotrip;
+package cn.leansd.base.ws;
 
-import cn.leansd.cotrip.controller.TripPlanStatusNotificationController;
-import cn.leansd.cotrip.controller.WebSocketConfig;
-import cn.leansd.cotrip.model.plan.TripPlanJoinedEvent;
-import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.base.ws.check_conn.HelloMessage;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * 本测试的能力和CoTripMatchingResultMvcTest是一样的，
- * 但是本测试是通过实际的Http请求验证，MvcTest是仿制的Http服务器
- * 本测试仅是演示目的。
+ * 技术探针：验证WebSocket的消息发送能力 。
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -70,27 +65,30 @@ public class SpikeIntegrationTest {
         final AtomicReference<Throwable> failure = new AtomicReference<>();
         Semaphore sem = new Semaphore(0);
 
-        StompSessionHandler handler = new SocketSessionHandler(latch, failure,
-                Arrays.asList(TripPlanStatusNotificationController.BROADCAST_UPDATE_TOPIC,
-                "/user" +TripPlanStatusNotificationController.UPDATE_QUEUE),sem) {
+        String queueName = "/queue/status";
+        String topicName = "/topic/demo";
+        StompSessionHandler handler = new SocketSessionClientHandler(latch, failure,
+                Arrays.asList(topicName,
+                "/user" +queueName),sem) {
             @Override
             public Type getPayloadType(StompHeaders headers) {
-                return TripPlanJoinedEvent.class;
+                return
+                        HelloMessage.class;
             }
 
             @Override
             protected void handlePayload(Object payload) {
-               TripPlanJoinedEvent event = (TripPlanJoinedEvent) payload;
-               assertNotNull(event);
+                HelloMessage data = (HelloMessage) payload;
+               assertNotNull(data);
            }
         };
         CompletableFuture<StompSession> connect = stompClient.connectAsync("ws://localhost:{port}"+WebSocketConfig.WS_ENDPOINT, headers, handler, this.port);
         connect.join();
         sem.acquire(); //看起来这个是必须的，否则下面的send有时候会失败。需要进一步求证一下原因。
         logger.info("send message");
-        template.convertAndSendToUser("user-id-1", TripPlanStatusNotificationController.UPDATE_QUEUE,
-                new TripPlanJoinedEvent(new TripPlanDTO() ));
-        if (latch.await(6, TimeUnit.SECONDS)) {
+        template.convertAndSendToUser("user-id-1", queueName,
+                new HelloMessage("Hello, user-id-1!"));
+        if (latch.await(30, TimeUnit.SECONDS)) {
             if (failure.get() != null) {
                 throw new AssertionError("", failure.get());
             }

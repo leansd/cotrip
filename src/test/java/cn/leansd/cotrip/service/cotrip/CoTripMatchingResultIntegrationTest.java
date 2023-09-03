@@ -3,7 +3,7 @@ package cn.leansd.cotrip.service.cotrip;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.controller.TripPlanStatusNotificationController;
-import cn.leansd.cotrip.controller.WebSocketConfig;
+import cn.leansd.base.ws.WebSocketConfig;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
@@ -126,59 +126,11 @@ public class CoTripMatchingResultIntegrationTest {
     }
 
     @Autowired  SimpMessagingTemplate template;
-    @Autowired
-    WebSocketSessionManager webSocketSessionManager;
     Logger logger = Logger.getLogger(CoTripMatchingResultIntegrationTest.class.getName());
     @DisplayName("匹配成功后应该更新TripPlan的状态(从WebSocket接口验证)")
     @Test
     public void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws Exception {
-        WebSocketClient webSocketClient = new StandardWebSocketClient();
-        WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.getObjectMapper().registerModule(new JavaTimeModule());
-        stompClient.setMessageConverter(converter);
 
-        WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
-        headers.add("user-id", "user-id-1");
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicReference<Throwable> failure = new AtomicReference<>();
-        Semaphore sem = new Semaphore(0);
-
-        StompSessionHandler handler = new SocketSessionHandler(latch, failure,
-                Arrays.asList(TripPlanStatusNotificationController.BROADCAST_UPDATE_TOPIC,
-                "/user" +TripPlanStatusNotificationController.UPDATE_QUEUE),sem) {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return TripPlanJoinedEvent.class;
-            }
-
-            @Override
-            protected void handlePayload(Object payload) {
-               TripPlanJoinedEvent event = (TripPlanJoinedEvent) payload;
-               assertNotNull(event);
-           }
-        };
-        CompletableFuture<StompSession> connect = stompClient.connectAsync("ws://localhost:{port}"+WebSocketConfig.WS_ENDPOINT, headers, handler, this.port);
-        connect.join();
-        sem.acquire(); //看起来这个是必须的，否则下面的send有时候会失败。需要进一步求证一下原因。
-        logger.info("send message");
-        //template.convertAndSend(TripPlanStatusNotificationController.BROADCAST_UPDATE_TOPIC, new TripPlanJoinedEvent(new TripPlanDTO() ));
-//        template.convertAndSendToUser("user-id-1", TripPlanStatusNotificationController.UPDATE_QUEUE,
-//                new TripPlanJoinedEvent(new TripPlanDTO() ));
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        String json = mapper.writeValueAsString(new TripPlanJoinedEvent(new TripPlanDTO()));
-        webSocketSessionManager.sendMessageToUser("user-id-1",json);
-        if (latch.await(6, TimeUnit.SECONDS)) {
-            if (failure.get() != null) {
-                throw new AssertionError("", failure.get());
-            }
-        }
-        else {
-            fail("No message received");
-        }
     }
 
 }

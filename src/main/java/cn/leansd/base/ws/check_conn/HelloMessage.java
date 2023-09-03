@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.controller;
+package cn.leansd.base.ws.check_conn;
 
 public class HelloMessage {
 

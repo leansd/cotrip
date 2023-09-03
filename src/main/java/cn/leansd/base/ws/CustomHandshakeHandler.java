@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.controller;
+package cn.leansd.base.ws;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;

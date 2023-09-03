@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.controller;
+package cn.leansd.base.ws;
 
 import java.security.Principal;
 
