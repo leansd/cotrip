@@ -8,16 +8,15 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static cn.leansd.base.session.HttpTest.USER_ID_HEADER;
 
@@ -25,11 +24,13 @@ import static cn.leansd.base.session.HttpTest.USER_ID_HEADER;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public static final String WS_ENDPOINT = "/notification";
+    Logger logger = Logger.getLogger(WebSocketConfig.class.getName());
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue");
         config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("/user");
     }
 
     @Bean
@@ -39,14 +40,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
                 String userId = request.getHeaders().getFirst(USER_ID_HEADER);
                 if (userId != null) {
-                    attributes.put("PRINCIPAL", new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>()));
+                    attributes.put("PRINCIPAL", new StompPrincipal(userId));
                 }
                 return true;
             }
 
             @Override
             public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
-                System.out.println("afterHandshake");
+                // do nothing
             }
         };
     }
@@ -55,6 +56,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint(WS_ENDPOINT)
                 .addInterceptors(httpSessionIdHandshakeInterceptor())
+                .setHandshakeHandler(new CustomHandshakeHandler()) // 设置自定义的握手处理器
                 .setAllowedOrigins("*");
     }
 

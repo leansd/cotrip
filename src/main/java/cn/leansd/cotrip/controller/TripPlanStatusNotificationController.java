@@ -12,11 +12,14 @@ public class TripPlanStatusNotificationController {
 
     @Autowired
     private SimpMessagingTemplate template;
-    public static final String TOPIC_TRIP_PLAN_JOINED = "/topic/updates";
+    public static final String BROADCAST_UPDATE_TOPIC = "/topic/updates";
+    public static final String UPDATE_QUEUE = "/queue/status";
     @TransactionalEventListener
     public void receivedTripPlanJoinedEvent(TripPlanJoinedEvent event) throws InconsistentStatusException {
         System.out.println(event);
-        //template.convertAndSendToUser(event.getData().getUserId(), TOPIC_TRIP_PLAN_JOINED, event.getData());
+        //template.convertAndSend(BROADCAST_UPDATE_TOPIC, event);
+        template.convertAndSendToUser("user-id-1", UPDATE_QUEUE, event);
+
     }
 }
 

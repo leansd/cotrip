@@ -7,7 +7,7 @@ import cn.leansd.cotrip.controller.WebSocketConfig;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,11 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -122,10 +126,12 @@ public class CoTripMatchingResultIntegrationTest {
     }
 
     @Autowired  SimpMessagingTemplate template;
+    @Autowired
+    WebSocketSessionManager webSocketSessionManager;
     Logger logger = Logger.getLogger(CoTripMatchingResultIntegrationTest.class.getName());
     @DisplayName("匹配成功后应该更新TripPlan的状态(从WebSocket接口验证)")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws InterruptedException, ExecutionException, JsonProcessingException {
+    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws Exception {
         WebSocketClient webSocketClient = new StandardWebSocketClient();
         WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
@@ -140,7 +146,8 @@ public class CoTripMatchingResultIntegrationTest {
         Semaphore sem = new Semaphore(0);
 
         StompSessionHandler handler = new SocketSessionHandler(latch, failure,
-                TripPlanStatusNotificationController.TOPIC_TRIP_PLAN_JOINED,sem) {
+                Arrays.asList(TripPlanStatusNotificationController.BROADCAST_UPDATE_TOPIC,
+                "/user" +TripPlanStatusNotificationController.UPDATE_QUEUE),sem) {
             @Override
             public Type getPayloadType(StompHeaders headers) {
                 return TripPlanJoinedEvent.class;
@@ -156,8 +163,14 @@ public class CoTripMatchingResultIntegrationTest {
         connect.join();
         sem.acquire(); //看起来这个是必须的，否则下面的send有时候会失败。需要进一步求证一下原因。
         logger.info("send message");
-        template.convertAndSend(TripPlanStatusNotificationController.TOPIC_TRIP_PLAN_JOINED, new TripPlanJoinedEvent(new TripPlanDTO() ));
-        //template.convertAndSendToUser("user-id-1", "/queue/updates", new TripPlanJoinedEvent(new TripPlanDTO() ));
+        //template.convertAndSend(TripPlanStatusNotificationController.BROADCAST_UPDATE_TOPIC, new TripPlanJoinedEvent(new TripPlanDTO() ));
+//        template.convertAndSendToUser("user-id-1", TripPlanStatusNotificationController.UPDATE_QUEUE,
+//                new TripPlanJoinedEvent(new TripPlanDTO() ));
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String json = mapper.writeValueAsString(new TripPlanJoinedEvent(new TripPlanDTO()));
+        webSocketSessionManager.sendMessageToUser("user-id-1",json);
         if (latch.await(6, TimeUnit.SECONDS)) {
             if (failure.get() != null) {
                 throw new AssertionError("", failure.get());

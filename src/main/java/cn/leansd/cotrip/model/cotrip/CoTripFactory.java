@@ -1,8 +1,5 @@
 package cn.leansd.cotrip.model.cotrip;
 
-import cn.leansd.cotrip.model.plan.TripPlan;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CoTripFactory {
