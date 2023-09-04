@@ -15,13 +15,14 @@ public abstract class SocketSessionClientHandler implements StompSessionHandler 
     private final AtomicReference<Throwable> failure;
     private final CountDownLatch latch;
     private final List<String> topics;
-    private final Semaphore semaphore;
+    private final Semaphore connectedSemaphore;
+    protected Object payload;
     Logger logger = Logger.getLogger(SocketSessionClientHandler.class.getName());
     public SocketSessionClientHandler(CountDownLatch latch, AtomicReference<Throwable> failure, List<String> topics, Semaphore sem) {
         this.latch = latch;
         this.failure = failure;
         this.topics = topics;
-        this.semaphore = sem;
+        this.connectedSemaphore = sem;
     }
 
     @Override
@@ -30,7 +31,7 @@ public abstract class SocketSessionClientHandler implements StompSessionHandler 
             session.subscribe(topic, this);
             logger.info("Subscribed to " + topic);
         });
-        semaphore.release();
+        connectedSemaphore.release();
     }
 
     @Override

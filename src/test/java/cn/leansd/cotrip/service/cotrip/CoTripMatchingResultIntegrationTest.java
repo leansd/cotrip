@@ -2,13 +2,12 @@ package cn.leansd.cotrip.service.cotrip;
 
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.controller.TripPlanStatusNotificationController;
-import cn.leansd.base.ws.WebSocketConfig;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
-import cn.leansd.cotrip.model.plan.*;
+import cn.leansd.cotrip.model.plan.PlanSpecification;
+import cn.leansd.cotrip.model.plan.TripPlan;
+import cn.leansd.cotrip.model.plan.TripPlanRepository;
+import cn.leansd.cotrip.model.plan.TripPlanStatus;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,34 +20,17 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.socket.WebSocketHttpHeaders;
-import org.springframework.web.socket.client.WebSocketClient;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import static cn.leansd.base.RestTemplateUtil.buildHeaderWithUserId;
 import static cn.leansd.cotrip.service.TestMap.orientalPear;
 import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * 本测试的能力和CoTripMatchingResultMvcTest是一样的，
@@ -130,7 +112,36 @@ public class CoTripMatchingResultIntegrationTest {
     @DisplayName("匹配成功后应该更新TripPlan的状态(从WebSocket接口验证)")
     @Test
     public void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws Exception {
-
+//        WebSocketClient webSocketClient = new StandardWebSocketClient();
+//        WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
+//        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+//        stompClient.setInboundMessageSizeLimit(1024 * 1024);
+//        stompClient.setTaskScheduler(WebSocketConfig.taskScheduler());
+//        stompClient.setDefaultHeartbeat(new long[]{0, 0});
+//        WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+//        headers.add("user-id", "user-id-1");
+//        StompSession stompSession = stompClient.connect("ws://localhost:" + port + "/trip-plan-status-notification", headers, new StompSessionHandler() {
+//            @Override
+//            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+//                logger.info("Connected!");
+//            }
+//        }).get(1, TimeUnit.SECONDS);
+//        stompSession.subscribe("/topic/trip-plan-status", new StompSessionHandler() {
+//            @Override
+//            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+//                logger.info("Subscribed!");
+//            }
+//        });
+//        stompSession.send("/app/trip-plan-status", new TripPlanStatusNotification(firstTripPlan.getId(), TripPlanStatus.JOINED));
+//        stompSession.send("/app/trip-plan-status", new TripPlanStatusNotification(secondTripPlan.getId(), TripPlanStatus.JOINED));
+//        Thread.sleep(1000);
+//        stompSession.disconnect();
+//        stompClient.stop();
+//        stompClient.destroy();
+//        TripPlan savedExistingPlan = tripPlanRepository.findById(firstTripPlan.getId()).orElse(null);
+//        TripPlan savedNewPlan = tripPlanRepository.findById(secondTripPlan.getId()).orElse(null);
+//        assertThat(savedExistingPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
+//        assertThat(savedNewPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
     }
 
 }
