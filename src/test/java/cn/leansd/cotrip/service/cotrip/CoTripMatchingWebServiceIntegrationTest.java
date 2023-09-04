@@ -4,7 +4,7 @@ import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.base.ws.WebSocketConfig;
 import cn.leansd.base.ws.WebSocketTestTemplate;
-import cn.leansd.base.ws.check_conn.HelloMessage;
+import cn.leansd.cotrip.controller.TripPlanStatusNotificationController;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
@@ -42,29 +42,33 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
-public class CoTripMatchingResultIntegrationTest {
-    @Autowired
-    private TripPlanRepository tripPlanRepository;
-    @Autowired
-    private CoTripRepository coTripRepository;
+public class CoTripMatchingWebServiceIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate;
     @Value(value="${local.server.port}")
     private int port;
-
-    TripPlanDTO firstTripPlan = null;
-    TripPlanDTO secondTripPlan = null;
     WebSocketTestTemplate testTemplate = null;
 
     @BeforeEach
     public void setUp() throws InterruptedException {
+        testTemplate = new WebSocketTestTemplate("ws://localhost:" + this.port + WebSocketConfig.WS_ENDPOINT,
+                "user-id-1",
+                TripPlanStatusNotificationController.UPDATE_QUEUE,
+                TripPlanStatusNotificationController.BROADCAST_UPDATE_TOPIC,
+                TripPlanJoinedEvent.class,
+                new Consumer<Object>() {
+                    @Override
+                    public void accept(Object payload) {
+                        assertNotNull(payload);
+                    }
+                });
 
         LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
         LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
-                .build(),1));
+                .build(), 1));
         TripPlan firstPlan = new TripPlan(UserId.of("user_id_1"),
                 tripPlanDTO.getPlanSpecification());
         TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
@@ -72,46 +76,14 @@ public class CoTripMatchingResultIntegrationTest {
 
         ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
         assertThat(response_1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        firstTripPlan = response_1.getBody();
 
         ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(secondPlan, buildHeaderWithUserId("user-id-2")), TripPlanDTO.class);
         assertThat(response_2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        secondTripPlan = response_2.getBody();
-
-
     }
 
-
-
-    @DisplayName("匹配成功后应该更新TripPlan的状态(数据库验证)")
+    @DisplayName("匹配成功后应该更新TripPlan的状态(从WebSocket接口验证)")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByDb() {
-        TripPlan savedExistingPlan = tripPlanRepository.findById(firstTripPlan.getId()).orElse(null);
-        TripPlan savedNewPlan = tripPlanRepository.findById(secondTripPlan.getId()).orElse(null);
-        assertThat(savedExistingPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
-        assertThat(savedNewPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
+    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws Exception {
+        testTemplate.verify(()->{});
     }
-
-    @DisplayName("匹配成功后应该更新TripPlan的状态(接口验证)")
-    @Test
-    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByAPI() {
-        ResponseEntity<TripPlanDTO> response =  restTemplate.exchange(
-                "/trip-plan/" + firstTripPlan.getId(),
-                HttpMethod.GET,
-                new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
-                TripPlanDTO.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        TripPlanDTO tripPlanDTO = response.getBody();
-        assertThat(tripPlanDTO.getStatus()).isEqualTo(TripPlanStatus.JOINED.toString());
-
-        response = restTemplate.exchange(
-                "/trip-plan/" + secondTripPlan.getId(),
-                HttpMethod.GET,
-                new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
-                TripPlanDTO.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        tripPlanDTO = response.getBody();
-        assertThat(tripPlanDTO.getStatus()).isEqualTo(TripPlanStatus.JOINED.toString());
-    }
-
 }

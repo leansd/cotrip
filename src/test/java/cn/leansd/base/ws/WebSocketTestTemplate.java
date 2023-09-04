@@ -48,17 +48,22 @@ public class WebSocketTestTemplate {
         buildClientSessionHandler();
     }
 
-    private void buildStompClient() {
-        WebSocketClient webSocketClient = new StandardWebSocketClient();
-        stompClient = new WebSocketStompClient(webSocketClient);
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.getObjectMapper().registerModule(new JavaTimeModule());
-        stompClient.setMessageConverter(converter);
+    public void execute(Runnable task) throws Exception {
+        assert (task != null);
+        clientConnectedSemaphore.acquire();
+        task.run();
     }
 
-    private void buildHeadersWithUserId() {
-        headers = new WebSocketHttpHeaders();
-        headers.add("user-id", this.headerUserId);
+    public void verify(Runnable task) throws InterruptedException {
+        if (task != null)
+            task.run();
+        if (latch.await(30, TimeUnit.SECONDS)) {
+            if (failure.get() != null) {
+                throw new AssertionError("", failure.get());
+            }
+        } else {
+            fail("No message received");
+        }
     }
 
     private void buildClientSessionHandler() throws InterruptedException {
@@ -83,21 +88,17 @@ public class WebSocketTestTemplate {
         connect.join();
     }
 
-    public void execute(Runnable task) throws Exception {
-        assert (task != null);
-        clientConnectedSemaphore.acquire();
-        task.run();
+
+    private void buildStompClient() {
+        WebSocketClient webSocketClient = new StandardWebSocketClient();
+        stompClient = new WebSocketStompClient(webSocketClient);
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.getObjectMapper().registerModule(new JavaTimeModule());
+        stompClient.setMessageConverter(converter);
     }
 
-    public void verify(Runnable task) throws InterruptedException {
-        if (task != null)
-            task.run();
-        if (latch.await(30, TimeUnit.SECONDS)) {
-            if (failure.get() != null) {
-                throw new AssertionError("", failure.get());
-            }
-        } else {
-            fail("No message received");
-        }
+    private void buildHeadersWithUserId() {
+        headers = new WebSocketHttpHeaders();
+        headers.add("user-id", this.headerUserId);
     }
 }

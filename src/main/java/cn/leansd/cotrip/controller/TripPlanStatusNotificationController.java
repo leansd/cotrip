@@ -16,10 +16,7 @@ public class TripPlanStatusNotificationController {
     public static final String UPDATE_QUEUE = "/queue/status";
     @TransactionalEventListener
     public void receivedTripPlanJoinedEvent(TripPlanJoinedEvent event) throws InconsistentStatusException {
-        System.out.println(event);
-        //template.convertAndSend(BROADCAST_UPDATE_TOPIC, event);
-        template.convertAndSendToUser("user-id-1", UPDATE_QUEUE, event);
-
+        template.convertAndSendToUser(event.getData().getUserId(), UPDATE_QUEUE, event);
     }
 }
 
