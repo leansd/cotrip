@@ -6,8 +6,7 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -31,7 +30,11 @@ public abstract class SocketSessionClientHandler implements StompSessionHandler 
             session.subscribe(topic, this);
             logger.info("Subscribed to " + topic);
         });
-        connectedSemaphore.release();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.schedule(() -> {
+            connectedSemaphore.release();
+            System.out.println("Semaphore released after 2 seconds!");
+        }, 2, TimeUnit.SECONDS);
     }
 
     @Override
