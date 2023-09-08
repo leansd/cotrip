@@ -1,17 +1,17 @@
-package cn.leansd.cotrip.model.user;
+package cn.leansd.base.livecheck;
 import cn.leansd.base.model.DomainEntity;
 import jakarta.persistence.Entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "users")
+@Entity(name = "fake_user")
 @Data
 @NoArgsConstructor
 @Builder
-public class User extends DomainEntity {
+public class FakeUser extends DomainEntity {
     private String name;
-    public User(String id) {
+    public FakeUser(String id) {
         super(id);
     }
 }
