@@ -5,7 +5,6 @@ import cn.leansd.base.types.TimeSpan;
 import cn.leansd.base.ws.WebSocketConfig;
 import cn.leansd.base.ws.WebSocketTestTemplate;
 import cn.leansd.cotrip.controller.TripPlanStatusNotificationController;
-import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,16 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import static cn.leansd.base.RestTemplateUtil.buildHeaderWithUserId;
 import static cn.leansd.cotrip.service.TestMap.orientalPear;
@@ -42,7 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
-public class CoTripMatchingWebServiceIntegrationTest {
+public class CoTripMatchingWebSocketIntegrationTest {
+    private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
     @Autowired
     private TestRestTemplate restTemplate;
     @Value(value="${local.server.port}")
@@ -74,10 +71,10 @@ public class CoTripMatchingWebServiceIntegrationTest {
         TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
 
-        ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
+        ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity(urlTripPlan, new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
         assertThat(response_1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(secondPlan, buildHeaderWithUserId("user-id-2")), TripPlanDTO.class);
+        ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity(urlTripPlan, new HttpEntity<>(secondPlan, buildHeaderWithUserId("user-id-2")), TripPlanDTO.class);
         assertThat(response_2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 

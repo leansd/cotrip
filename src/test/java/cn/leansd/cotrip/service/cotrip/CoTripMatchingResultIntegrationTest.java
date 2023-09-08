@@ -43,6 +43,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
 public class CoTripMatchingResultIntegrationTest {
+    private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
+
     @Autowired
     private TripPlanRepository tripPlanRepository;
     @Autowired
@@ -55,6 +57,7 @@ public class CoTripMatchingResultIntegrationTest {
     TripPlanDTO firstTripPlan = null;
     TripPlanDTO secondTripPlan = null;
     WebSocketTestTemplate testTemplate = null;
+
 
     @BeforeEach
     public void setUp() throws InterruptedException {
@@ -70,11 +73,11 @@ public class CoTripMatchingResultIntegrationTest {
         TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
 
-        ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
+        ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity(urlTripPlan, new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
         assertThat(response_1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         firstTripPlan = response_1.getBody();
 
-        ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity("/trip-plan", new HttpEntity<>(secondPlan, buildHeaderWithUserId("user-id-2")), TripPlanDTO.class);
+        ResponseEntity<TripPlanDTO> response_2 = restTemplate.postForEntity(urlTripPlan, new HttpEntity<>(secondPlan, buildHeaderWithUserId("user-id-2")), TripPlanDTO.class);
         assertThat(response_2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         secondTripPlan = response_2.getBody();
 
@@ -96,7 +99,7 @@ public class CoTripMatchingResultIntegrationTest {
     @Test
     public void shouldChangeTripPlanStatusWhenMatchedVerifiedByAPI() {
         ResponseEntity<TripPlanDTO> response =  restTemplate.exchange(
-                "/trip-plan/" + firstTripPlan.getId(),
+                urlTripPlan + firstTripPlan.getId(),
                 HttpMethod.GET,
                 new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
                 TripPlanDTO.class);
@@ -105,7 +108,7 @@ public class CoTripMatchingResultIntegrationTest {
         assertThat(tripPlanDTO.getStatus()).isEqualTo(TripPlanStatus.JOINED.toString());
 
         response = restTemplate.exchange(
-                "/trip-plan/" + secondTripPlan.getId(),
+                urlTripPlan + secondTripPlan.getId(),
                 HttpMethod.GET,
                 new HttpEntity<>(buildHeaderWithUserId("user-id-1")),
                 TripPlanDTO.class);

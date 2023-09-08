@@ -37,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 public class CoTripMatchingResultMvcTest {
+    private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
+
     @Autowired
     private TripPlanRepository tripPlanRepository;
     @Autowired
@@ -65,7 +67,7 @@ public class CoTripMatchingResultMvcTest {
         TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
 
-        MvcResult response_1 = mockMvc.perform(post("/trip-plan")
+        MvcResult response_1 = mockMvc.perform(post(urlTripPlan)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("user-id", "user-id-1")
                         .content(objectMapper.writeValueAsString(firstPlan))
@@ -75,7 +77,7 @@ public class CoTripMatchingResultMvcTest {
 
         firstTripPlan = objectMapper.readValue(response_1.getResponse().getContentAsString(), TripPlanDTO.class);
 
-        MvcResult response_2 = mockMvc.perform(post("/trip-plan")
+        MvcResult response_2 = mockMvc.perform(post(urlTripPlan)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("user-id", "user-id-2")
                         .content(objectMapper.writeValueAsString(secondPlan))
@@ -101,7 +103,7 @@ public class CoTripMatchingResultMvcTest {
     @Test
     public void shouldChangeTripPlanStatusWhenMatchedVerifiedByAPI() throws Exception {
         MvcResult result1 = mockMvc.perform(
-                        get("/trip-plan/" + firstTripPlan.getId())
+                        get(urlTripPlan + firstTripPlan.getId())
                                 .header("User-Id", "user-id-1")
                 )
                 .andExpect(status().isOk())
@@ -111,7 +113,7 @@ public class CoTripMatchingResultMvcTest {
         assertThat(tripPlanDTO1.getStatus()).isEqualTo(TripPlanStatus.JOINED.toString());
 
         MvcResult result2 = mockMvc.perform(
-                        get("/trip-plan/" + secondTripPlan.getId())
+                        get(urlTripPlan + secondTripPlan.getId())
                                 .header("User-Id", "user-id-2")
                 )
                 .andExpect(status().isOk())

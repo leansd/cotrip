@@ -30,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 public class TripPlanServiceTest {
+    private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
+
     @Autowired
     private TripPlanService tripPlanService;
     @Autowired
@@ -69,7 +71,7 @@ public class TripPlanServiceTest {
     @Test
     public void shouldReturn404ErrorWhenTripPlanNotExisted() throws Exception {
         String tripPlanId = "not_existed_trip_plan_id";
-        mockMvc.perform(get("/trip-plan/" + tripPlanId)
+        mockMvc.perform(get(urlTripPlan + tripPlanId)
                 .header("user-id", "user-id-1"))
                 .andExpect(status().isNotFound());
     }

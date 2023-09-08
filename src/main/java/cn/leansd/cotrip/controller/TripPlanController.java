@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/cotrip/plan/v1/trip-plans")
+@RequestMapping("/cotrip/plan/v1/trip-plans/")
 public class TripPlanController {
 
     private final TripPlanService tripPlanService;
