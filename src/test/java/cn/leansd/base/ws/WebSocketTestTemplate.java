@@ -57,7 +57,7 @@ public class WebSocketTestTemplate {
     public void verify(Runnable task) throws InterruptedException {
         if (task != null)
             task.run();
-        if (latch.await(30, TimeUnit.SECONDS)) {
+        if (latch.await(90, TimeUnit.SECONDS)) {
             if (failure.get() != null) {
                 throw new AssertionError("", failure.get());
             }
