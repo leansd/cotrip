@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 import static cn.leansd.cotrip.service.TestMap.hqAirport;
 import static cn.leansd.cotrip.service.TestMap.peopleSquare;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
+@RecordApplicationEvents
 public class TripPlanServiceTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
 
@@ -36,13 +40,6 @@ public class TripPlanServiceTest {
     private TripPlanService tripPlanService;
     @Autowired
     private TripPlanRepository tripPlanRepository;
-    @Autowired
-    private TestEventListener listener;
-
-    @BeforeEach
-    public void setUp(){
-        listener.clear();
-    }
 
     @Test
     public void testCreateTripPlan() {
@@ -55,14 +52,21 @@ public class TripPlanServiceTest {
         verifyTripPlanEventPublished(tripPlan.getId());
     }
 
+    private void verifyTripPlanEventPublished(String id) {
+        assertThat(applicationEvents.stream(TripPlanCreatedEvent.class))
+                .isNotEmpty()
+                .hasSize(1)
+                .allMatch(event -> event instanceof TripPlanCreatedEvent);
+    }
+
+
+    @Autowired
+    private ApplicationEvents applicationEvents; // 注入ApplicationEvents来审查事件
+
     private void verifyTripPlanCreated(String tripPlanId) {
         Optional<TripPlan> retrievedTripPlan = tripPlanRepository.findById(tripPlanId);
         assertTrue(retrievedTripPlan.isPresent());
         assertEquals(TripPlanStatus.WAITING_MATCH, retrievedTripPlan.get().getStatus());
-    }
-
-    private void verifyTripPlanEventPublished(String tripPlanId) {
-        assertTrue(listener.hasReceivedEvent(TripPlanCreatedEvent.class));
     }
 
     @Autowired
