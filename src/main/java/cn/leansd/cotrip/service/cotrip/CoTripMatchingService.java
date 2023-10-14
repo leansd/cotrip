@@ -45,11 +45,11 @@ public class CoTripMatchingService {
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
         CoTrip coTrip = matchExistingTripPlan(event.getData());
         if (coTrip!=null){
-            matchSuccess(event.getData().getId(),coTrip);
+            matchSuccess(coTrip);
         }
     }
 
-    private void matchSuccess(String thePlanId, CoTrip coTrip) {
+    private void matchSuccess(CoTrip coTrip) {
         tripPlanService.joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList().stream().map(
                 id-> TripPlanId.of(id)).collect(Collectors.toList()));
         coTripRepository.save(coTrip);
