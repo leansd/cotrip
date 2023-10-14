@@ -30,11 +30,6 @@ import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * 本测试的能力和CoTripMatchingResultMvcTest是一样的，
- * 但是本测试是通过实际的Http请求验证，MvcTest是仿制的Http服务器
- * 本测试仅是演示目的。
- */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
