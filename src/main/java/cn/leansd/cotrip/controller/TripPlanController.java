@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/cotrip/plan/v1/trip-plans/")
 public class TripPlanController {
@@ -28,9 +30,25 @@ public class TripPlanController {
         return new ResponseEntity<>(createdTripPlan, HttpStatus.CREATED);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<List<TripPlanDTO>> retrieveAllTripPlans(@UserSession SessionDTO session) {
+        List<TripPlanDTO> plans = tripPlanService.retrieveTripPlans(UserId.of(session.getUserId()));
+        return new ResponseEntity<>(plans, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TripPlanDTO> retrieveTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) throws RequestedResourceNotFound {
         TripPlanDTO tripPlan = tripPlanService.retrieveTripPlan(TripPlanId.of(id),UserId.of(session.getUserId()));
         return new ResponseEntity<>(tripPlan, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TripPlanId> cancelTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) throws RequestedResourceNotFound {
+        TripPlanId tripPlanId = tripPlanService.cancelTripPlan(TripPlanId.of(id),UserId.of(session.getUserId()));
+        return new ResponseEntity<>(tripPlanId, HttpStatus.OK);
+    }
+
+
+
+
 }

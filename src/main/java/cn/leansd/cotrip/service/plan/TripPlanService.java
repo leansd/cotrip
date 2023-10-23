@@ -42,4 +42,17 @@ public class TripPlanService {
         if (!tripPlan.isPresent()) throw new RequestedResourceNotFound("trip plan:" + tripPlanId.getId());
         return TripPlanConverter.toDTO(tripPlan.get());
     }
+
+    public List<TripPlanDTO> retrieveTripPlans(UserId userId) {
+        List<TripPlan> tripPlans = tripPlanRepository.findAllByCreatorId(userId.getId());
+        return TripPlanConverter.toDTOs(tripPlans);
+    }
+
+    public TripPlanId cancelTripPlan(TripPlanId tripPlanId, UserId userId) throws RequestedResourceNotFound {
+        Optional<TripPlan> tripPlan = tripPlanRepository.findById(tripPlanId.getId());
+        if (!tripPlan.isPresent()) throw new RequestedResourceNotFound("trip plan:" + tripPlanId.getId());
+        tripPlan.get().cancel();
+        tripPlanRepository.save(tripPlan.get());
+        return tripPlanId.of(tripPlan.get().getId());
+    }
 }

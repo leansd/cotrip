@@ -23,6 +23,6 @@ public class TripPlanDTO {
         this.id = tripPlan.getId();
         this.planSpecification = tripPlan.getPlanSpecification();
         this.status = tripPlan.getStatus().name();
-        this.setUserId(tripPlan.getCreatedBy());
+        this.setUserId(tripPlan.getCreatorId());
     }
 }

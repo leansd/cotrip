@@ -38,4 +38,9 @@ public class TripPlan extends AggregateRoot {
             @AttributeOverride(name = "id", column = @Column(name = "cotrip_id")),
     })
     private CoTripId coTripId;
+
+    public void cancel() {
+        this.status = TripPlanStatus.CANCELED;
+        registerEvent(new TripPlanCanceledEvent(new TripPlanDTO(this)));
+    }
 }

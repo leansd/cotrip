@@ -4,6 +4,7 @@ import cn.leansd.base.TestEventListener;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.plan.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -40,6 +41,11 @@ public class TripPlanServiceTest {
     private TripPlanService tripPlanService;
     @Autowired
     private TripPlanRepository tripPlanRepository;
+
+    @AfterEach
+    public void setUp() {
+        tripPlanRepository.deleteAll();
+    }
 
     @Test
     public void testCreateTripPlan() {
@@ -60,6 +66,7 @@ public class TripPlanServiceTest {
     }
 
 
+
     @Autowired
     private ApplicationEvents applicationEvents; // 注入ApplicationEvents来审查事件
 
@@ -78,5 +85,31 @@ public class TripPlanServiceTest {
         mockMvc.perform(get(urlTripPlan + tripPlanId)
                 .header("user-id", "user-id-1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("查询用户的所有TripPlan")
+    @Test
+    public void testRetrieveAllTripPlans(){
+        UserId userId = UserId.of("user_1");
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
+                .start(LocalDateTime.of(2023, 5, 1, 8, 0))
+                .end(LocalDateTime.of(2023, 5, 1, 8, 30))
+                .build(),1));
+        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, userId);
+        assertEquals(1, tripPlanService.retrieveTripPlans(userId).size());
+    }
+
+    @DisplayName("取消已创建的TripPlan应该返回200")
+    @Test
+    public void testCancelTripPlan() throws Exception {
+        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
+                .start(LocalDateTime.of(2023, 5, 1, 8, 0))
+                .end(LocalDateTime.of(2023, 5, 1, 8, 30))
+                .build(),1));
+        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, UserId.of("user_1"));
+        mockMvc.perform(delete(urlTripPlan + tripPlan.getId())
+                .header("user-id", "user-id-1"))
+                .andExpect(status().isOk());
+        tripPlanRepository.findById(tripPlan.getId()).ifPresent(tripPlan1 -> assertEquals(TripPlanStatus.CANCELED, tripPlan1.getStatus()));
     }
 }

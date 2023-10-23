@@ -3,6 +3,8 @@ package cn.leansd.cotrip.model.plan;
 
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 
+import java.util.List;
+
 public class TripPlanConverter {
     public static TripPlanDTO toDTO(TripPlan entity) {
         TripPlanDTO dto = new TripPlanDTO();
@@ -15,5 +17,9 @@ public class TripPlanConverter {
         TripPlan tripPlan = new TripPlan();
         tripPlan.setPlanSpecification(dto.getPlanSpecification());
         return tripPlan;
+    }
+
+    public static List<TripPlanDTO> toDTOs(List<TripPlan> tripPlans) {
+        return tripPlans.stream().map(TripPlanConverter::toDTO).collect(java.util.stream.Collectors.toList());
     }
 }

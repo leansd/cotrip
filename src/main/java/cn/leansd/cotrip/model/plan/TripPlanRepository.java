@@ -8,4 +8,5 @@ import java.util.List;
 public interface TripPlanRepository extends JpaRepository<TripPlan, String> {
     @Query("select tp from TripPlan tp where tp.status = 'WAITING_MATCH'")
     List<TripPlan> findAllNotMatching();
+    List<TripPlan> findAllByCreatorId(String id);
 }
