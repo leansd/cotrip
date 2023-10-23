@@ -43,9 +43,9 @@ public class TripPlanController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TripPlanId> cancelTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) throws RequestedResourceNotFound {
-        TripPlanId tripPlanId = tripPlanService.cancelTripPlan(TripPlanId.of(id),UserId.of(session.getUserId()));
-        return new ResponseEntity<>(tripPlanId, HttpStatus.OK);
+    public ResponseEntity<TripPlanDTO> cancelTripPlan(@PathVariable("id") String id, @UserSession SessionDTO session) throws RequestedResourceNotFound {
+        TripPlanDTO tripPlan = tripPlanService.cancelTripPlan(TripPlanId.of(id),UserId.of(session.getUserId()));
+        return new ResponseEntity<>(tripPlan, HttpStatus.OK);
     }
 
 
