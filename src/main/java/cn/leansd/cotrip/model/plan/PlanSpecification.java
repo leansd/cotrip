@@ -26,12 +26,14 @@ public class PlanSpecification  {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "start_location_name")),
             @AttributeOverride(name = "latitude", column = @Column(name = "start_longitude")),
             @AttributeOverride(name = "longitude", column = @Column(name = "start_latitude")),
     })
     private Location departureLocation;
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = "destination_location_name")),
             @AttributeOverride(name = "latitude", column = @Column(name = "destination_longitude")),
             @AttributeOverride(name = "longitude", column = @Column(name = "destination_latitude")),
     })
