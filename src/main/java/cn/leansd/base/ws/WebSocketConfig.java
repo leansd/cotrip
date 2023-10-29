@@ -1,6 +1,8 @@
 package cn.leansd.base.ws;
 
+import cn.leansd.base.security.HeaderResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
@@ -23,6 +25,12 @@ import static cn.leansd.base.session.HttpTest.USER_ID_HEADER;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    HeaderResolver headerResolver;
+    @Autowired
+    public WebSocketConfig(HeaderResolver headerResolver){
+        this.headerResolver = headerResolver;
+    }
     public static final String WS_ENDPOINT = "/notification";
     Logger logger = Logger.getLogger(WebSocketConfig.class.getName());
 
@@ -38,7 +46,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return new HandshakeInterceptor() {
             @Override
             public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-                String userId = request.getHeaders().getFirst(USER_ID_HEADER);
+                String userId =headerResolver.resolveUserId(request);
                 if (userId != null) {
                     attributes.put("PRINCIPAL", new StompPrincipal(userId));
                 }
