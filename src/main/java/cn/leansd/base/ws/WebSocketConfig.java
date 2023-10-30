@@ -1,6 +1,6 @@
 package cn.leansd.base.ws;
 
-import cn.leansd.base.security.HeaderResolver;
+import cn.leansd.base.session.HeaderResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +19,6 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static cn.leansd.base.session.HttpTest.USER_ID_HEADER;
 
 @Configuration
 @EnableWebSocketMessageBroker

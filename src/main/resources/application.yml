@@ -10,11 +10,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8089/realms/emergent
-          jwk-set-uri: http://localhost:8089/realms/emergent/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8089/realms/leansd
+          jwk-set-uri: http://localhost:8089/realms/leansd/protocol/openid-connect/certs
 logging:
   level:
     org.springframework.context.event: INFO
     org.springframework.web.socket: TRACE
     org.springframework.web.messaging: TRACE
     org.springframework.security: TRACE
+    cn.leansd: TRACE

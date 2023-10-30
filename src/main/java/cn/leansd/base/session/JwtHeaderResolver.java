@@ -1,6 +1,5 @@
-package cn.leansd.base.security;
+package cn.leansd.base.session;
 
-import cn.leansd.base.session.SessionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -13,17 +12,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("default")
-public class JwtHeaderResolver implements HeaderResolver{
+public class JwtHeaderResolver implements HeaderResolver {
     Logger logger = LoggerFactory.getLogger(JwtHeaderResolver.class);
     @Override
     public String resolveUserId(ServerHttpRequest request) {
+        logger.trace("enter resolveUserId");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof JwtAuthenticationToken)) {
-            logger.info("authentication is not JwtAuthenticationToken");
+            logger.warn("authentication is not JwtAuthenticationToken");
             return null;
         }
 
         Jwt jwt = ((JwtAuthenticationToken) authentication).getToken();
+        logger.info("jwt: {}", jwt.getClaims());
         return jwt.getClaimAsString("sub");
     }
 }
