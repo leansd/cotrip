@@ -1,5 +1,7 @@
 package cn.leansd.base.session;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +16,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class UserSessionArgumentResolver implements HandlerMethodArgumentResolver {
 
+    HeaderResolver headerResolver;
+    @Autowired
+    public UserSessionArgumentResolver(HeaderResolver headerResolver){
+        this.headerResolver = headerResolver;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterType().equals(SessionDTO.class) &&
@@ -25,20 +33,9 @@ public class UserSessionArgumentResolver implements HandlerMethodArgumentResolve
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof JwtAuthenticationToken)) {
-            /* 返回一个空Session，不抛出异常 */
-            return new SessionDTO();
-        }
-
-        Jwt jwt = ((JwtAuthenticationToken) authentication).getToken();
-        String userId = jwt.getClaimAsString("sub");
-        String name = jwt.getClaimAsString("name");
-        String userName = jwt.getClaimAsString("preferred_username");
-        String email = jwt.getClaimAsString("email");
-        String phoneNumber = jwt.getClaimAsString("phone_number");
-
-        SessionDTO session = new SessionDTO(userId, phoneNumber, name, userName, email);
+        HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        String userId = headerResolver.resolveUserId(servletRequest);
+        SessionDTO session = new SessionDTO(userId);
         return session;
     }
 }

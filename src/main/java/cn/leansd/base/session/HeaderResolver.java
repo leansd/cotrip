@@ -1,7 +1,7 @@
 package cn.leansd.base.session;
 
-import org.springframework.http.server.ServerHttpRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface HeaderResolver {
-    String resolveUserId(ServerHttpRequest request);
+    String resolveUserId(HttpServletRequest request);
 }

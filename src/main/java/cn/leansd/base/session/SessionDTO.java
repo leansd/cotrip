@@ -9,8 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SessionDTO {
     private String userId;
-    private String phoneNumber;
-    private String name;
-    private String userName;
-    private String email;
 }

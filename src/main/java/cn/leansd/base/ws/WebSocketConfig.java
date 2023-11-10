@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -44,7 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return new HandshakeInterceptor() {
             @Override
             public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-                String userId =headerResolver.resolveUserId(request);
+                String userId =headerResolver.resolveUserId(((ServletServerHttpRequest) request).getServletRequest());
                 if (userId != null) {
                     attributes.put("PRINCIPAL", new StompPrincipal(userId));
                 }

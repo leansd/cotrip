@@ -9,9 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-@Profile("default")
 public class WebMvcConfig implements WebMvcConfigurer {
-
     @Autowired
     private UserSessionArgumentResolver userSessionArgumentResolver;
 
