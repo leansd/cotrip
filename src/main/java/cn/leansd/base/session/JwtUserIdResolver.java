@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("default")
-public class JwtHeaderResolver implements HeaderResolver {
-    Logger logger = LoggerFactory.getLogger(JwtHeaderResolver.class);
+public class JwtUserIdResolver implements UserIdResolver {
+    Logger logger = LoggerFactory.getLogger(JwtUserIdResolver.class);
     @Override
     public String resolveUserId(HttpServletRequest request) {
         logger.trace("enter resolveUserId");

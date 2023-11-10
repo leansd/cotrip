@@ -8,7 +8,7 @@ import static cn.leansd.base.session.HttpTest.USER_ID_HEADER;
 
 @Component
 @Profile("dev")
-public class UserIdHeaderResolver implements HeaderResolver {
+public class HeaderUserIdResolver implements UserIdResolver {
     @Override
     public String resolveUserId(HttpServletRequest request) {
         return request.getHeader(USER_ID_HEADER);

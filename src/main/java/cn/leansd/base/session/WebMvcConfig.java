@@ -12,7 +12,6 @@ import java.util.List;
 public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private UserSessionArgumentResolver userSessionArgumentResolver;
-
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(userSessionArgumentResolver);
