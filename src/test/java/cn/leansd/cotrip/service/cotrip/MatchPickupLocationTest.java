@@ -3,14 +3,11 @@ package cn.leansd.cotrip.service.cotrip;
 import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.model.cotrip.CoTrip;
-import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
-import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.cotrip.model.plan.*;
-import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
-import cn.leansd.cotrip.service.site.PickupSiteService;
+import cn.leansd.site.service.PickupSiteDTO;
+import cn.leansd.site.service.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import cn.leansd.geo.haversine.HaversineGeoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +19,11 @@ import org.mockito.Mockito;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static cn.leansd.cotrip.service.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,30 +48,30 @@ public class MatchPickupLocationTest {
     }
 
     @DisplayName("匹配成功后，应该更新TripPlan的pickup信息")
+    @Test
     public void shouldChangeTripPlanStatusWhenMatched() throws InconsistentStatusException {
-        PlanSpecification planSpecification_1 = new PlanSpecification(nearHqStationSouth, peopleSquare, TimeSpan.builder()
-                .start(Y2305010800)
-                .end(Y2305010830)
-                .build(),1);
-        PlanSpecification planSpecification_2 = new PlanSpecification(nearHqStationSouth, peopleSquare, TimeSpan.builder()
+        PlanSpecification planSpecification = new PlanSpecification(nearHqStationSouth, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
                 .build(),1);
 
         existingPlan = new TripPlan(UserId.of("user_id_1"),
-                planSpecification_1);
+                planSpecification);
+        newPlan = new TripPlan(UserId.of("user_id_2"),
+                planSpecification);
+
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));
+        when(tripPlanRepository.findById(eq(newPlan.getId()))).thenReturn(Optional.of(newPlan));
 
-        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(new TripPlan(UserId.of("user_id_2"),
-                planSpecification_2))));
+        when(pickupSiteService.findNearestPickupSite(notNull())).thenReturn(PickupSiteDTO.builder().location(hqStationNorth).build());
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
 
-        ArgumentCaptor<List<TripPlanId>> tripPlanListCaptor= ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<CoTripId> coTripIdArgumentCaptor= ArgumentCaptor.forClass(CoTripId.class);
-
-        ArgumentCaptor<TripPlan> tripPlanArgumentCaptor= ArgumentCaptor.forClass(TripPlan.class);
-        verify(tripPlanRepository).save(tripPlanArgumentCaptor.capture());
-        TripPlan capturedTripPlan = tripPlanArgumentCaptor.getValue();
-        assertThat(capturedTripPlan.getPickupLocation()).isNotNull();
+        ArgumentCaptor<List<TripPlan>> tripPlanListCaptor= ArgumentCaptor.forClass(List.class);
+        verify(tripPlanRepository).saveAll(tripPlanListCaptor.capture());
+        List<TripPlan> capturedTripPlan = tripPlanListCaptor.getValue();
+        capturedTripPlan.forEach(tripPlan -> {
+            assertThat(tripPlan.getPickupLocation().getLocation()).isEqualTo(hqStationNorth);
+        });
     }
-
 }

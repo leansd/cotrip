@@ -1,17 +1,10 @@
-package cn.leansd.cotrip.model.site;
+package cn.leansd.site.model.site;
 
 import cn.leansd.base.model.AggregateRoot;
-import cn.leansd.base.model.UserId;
-import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.geo.Location;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
 
 @Entity
 @Data

@@ -4,7 +4,7 @@ import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
-import cn.leansd.geo.Location;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,13 +25,14 @@ public class TripPlan extends AggregateRoot {
     @Embedded
     PlanSpecification planSpecification;
 
-    @Transient
-    Location pickupLocation;
+    @OneToOne
+    @Nullable
+    PickupLocation pickupLocation;
 
     @Enumerated(EnumType.STRING)
     private TripPlanStatus status;
 
-    public void joinedCoTrip(CoTripId coTripId) {
+    public void joinCoTrip(CoTripId coTripId) {
         this.coTripId = coTripId;
         this.status = TripPlanStatus.JOINED;
         registerEvent(new TripPlanJoinedEvent(new TripPlanDTO(this)));

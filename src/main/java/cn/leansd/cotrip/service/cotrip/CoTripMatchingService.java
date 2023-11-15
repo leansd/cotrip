@@ -5,13 +5,13 @@ import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripFactory;
 import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
+import cn.leansd.cotrip.model.plan.PickupLocation;
 import cn.leansd.cotrip.model.plan.TripPlan;
 import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
-import cn.leansd.cotrip.model.plan.TripPlanId;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
-import cn.leansd.cotrip.service.plan.TripPlanService;
-import cn.leansd.cotrip.service.site.PickupSiteService;
+import cn.leansd.site.service.PickupSiteDTO;
+import cn.leansd.site.service.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,15 +52,17 @@ public class CoTripMatchingService {
     }
 
     private void matchSuccess(CoTrip coTrip) {
-        joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList());
+        updateTripPlan(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList());
         coTripRepository.save(coTrip);
     }
 
-    public void joinedCoTrip(CoTripId coTripId, List<String> tripPlanIds) {
+    private void updateTripPlan(CoTripId coTripId, List<String> tripPlanIds) {
         List<TripPlan> tripPlans = tripPlanIds.stream().map(tripPlanId->
         {
             TripPlan tripPlan = tripPlanRepository.findById(tripPlanId).get();
-            tripPlan.joinedCoTrip(coTripId);
+            tripPlan.joinCoTrip(coTripId);
+            PickupSiteDTO siteLocation = pickupSiteService.findNearestPickupSite(tripPlan.getPlanSpecification().getDepartureLocation());
+            tripPlan.setPickupLocation(new PickupLocation(siteLocation.getLocation()));
             return tripPlan;
         }).collect(Collectors.toList());
         tripPlanRepository.saveAll(tripPlans);

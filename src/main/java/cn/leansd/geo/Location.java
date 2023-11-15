@@ -1,5 +1,6 @@
 package cn.leansd.geo;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 

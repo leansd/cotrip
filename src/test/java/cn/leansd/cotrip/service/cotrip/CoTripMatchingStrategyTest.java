@@ -9,7 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
-import cn.leansd.cotrip.service.site.PickupSiteService;
+import cn.leansd.site.service.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
