@@ -11,6 +11,7 @@ import cn.leansd.cotrip.model.plan.TripPlanId;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.cotrip.service.site.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,16 +29,17 @@ public class CoTripMatchingService {
     private final TripPlanRepository tripPlanRepository;
     private final CoTripRepository coTripRepository;
     private final GeoService geoService;
-    private final TripPlanService tripPlanService;
+    private final PickupSiteService pickupSiteService;
+
     @Autowired
     public CoTripMatchingService(TripPlanRepository tripPlanRepository,
-                                 TripPlanService tripPlanService,
                                  CoTripRepository coTripRepository,
-                                 GeoService geoService) {
+                                 GeoService geoService,
+                                 PickupSiteService pickupSiteService) {
         this.tripPlanRepository = tripPlanRepository;
-        this.tripPlanService = tripPlanService;
         this.coTripRepository = coTripRepository;
         this.geoService = geoService;
+        this.pickupSiteService = pickupSiteService;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -50,9 +52,18 @@ public class CoTripMatchingService {
     }
 
     private void matchSuccess(CoTrip coTrip) {
-        tripPlanService.joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList().stream().map(
-                id-> TripPlanId.of(id)).collect(Collectors.toList()));
+        joinedCoTrip(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList());
         coTripRepository.save(coTrip);
+    }
+
+    public void joinedCoTrip(CoTripId coTripId, List<String> tripPlanIds) {
+        List<TripPlan> tripPlans = tripPlanIds.stream().map(tripPlanId->
+        {
+            TripPlan tripPlan = tripPlanRepository.findById(tripPlanId).get();
+            tripPlan.joinedCoTrip(coTripId);
+            return tripPlan;
+        }).collect(Collectors.toList());
+        tripPlanRepository.saveAll(tripPlans);
     }
 
     private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {

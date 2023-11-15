@@ -7,8 +7,9 @@ import cn.leansd.geo.Location;
  */
 public class TestMap {
     public static Location hqStationSouth = new Location(31.19346,121.32074); //虹桥火车站南出站口
+    public static Location nearHqStationSouth = new Location(31.19345,121.32071);
     public static Location hqStationNorth = new Location(31.194751,121.32236); //虹桥火车站北1出站口
-
+    public static Location nearHqStationNorth = new Location(31.194753,121.32232);
     public static Location hqAirport = new Location(31.193559,121.326291); //虹桥机场T2到达
 
     public static Location orientalPear = new Location(31.23958,121.499763); //东方明珠

@@ -47,6 +47,8 @@ public class TripPlanServiceTest {
         tripPlanRepository.deleteAll();
     }
 
+
+    @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
     public void testCreateTripPlan() {
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()

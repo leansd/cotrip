@@ -29,13 +29,6 @@ public class TripPlanService {
         return TripPlanConverter.toDTO(tripPlan);
     }
 
-    public void joinedCoTrip(CoTripId coTripId, List<TripPlanId> tripPlanIds) {
-        tripPlanIds.forEach(tripPlanId -> {
-            TripPlan tripPlan = tripPlanRepository.findById(tripPlanId.getId()).get();
-            tripPlan.joinedCoTrip(coTripId);
-            tripPlanRepository.save(tripPlan);
-        });
-    }
 
     public TripPlanDTO retrieveTripPlan(TripPlanId tripPlanId, UserId userId) throws RequestedResourceNotFound {
         Optional<TripPlan> tripPlan = tripPlanRepository.findById(tripPlanId.getId());

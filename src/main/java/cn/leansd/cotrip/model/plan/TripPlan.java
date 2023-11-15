@@ -4,6 +4,7 @@ import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.model.cotrip.CoTripId;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.geo.Location;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +24,9 @@ public class TripPlan extends AggregateRoot {
 
     @Embedded
     PlanSpecification planSpecification;
+
+    @Transient
+    Location pickupLocation;
 
     @Enumerated(EnumType.STRING)
     private TripPlanStatus status;
