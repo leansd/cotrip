@@ -5,6 +5,7 @@ import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,8 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static cn.leansd.cotrip.service.TestMap.hqAirport;
-import static cn.leansd.cotrip.service.TestMap.peopleSquare;
+import static cn.leansd.cotrip.service.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,6 +41,10 @@ public class PickupSiteServiceTest {
     @DisplayName("存在多个上车点时返回最近的上车点")
     @Test
     public void testGetNearestPickupSite() {
+        pickupSiteService.addPickupSite(hqStationSouth);
+        pickupSiteService.addPickupSite(peopleSquare);
+        PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
+        assertThat(pickupSiteDTO.getLocation()).isEqualTo(hqStationSouth);
     }
 
     @Autowired
