@@ -24,7 +24,10 @@ public class PickupSiteService {
 
     private PickupSite guaranteeValid(Location location, PickupSite pickupSite) {
         if (pickupSite==null || HaversineDistance.between(location,pickupSite.getLocation())>maxDistance){
-            return new PickupSite(location, SiteType.TEMPORARY);
+            PickupSite temporarySite = new PickupSite(location, SiteType.TEMPORARY);
+            temporarySite.registerEvent(new PickupSiteNotAvailableEvent(location));
+            pickupSiteRepository.save(temporarySite);
+            return  temporarySite;
         }else{
             return pickupSite;
         }

@@ -1,7 +1,9 @@
 package cn.leansd.site;
 
+import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leansd.site.model.site.SiteType;
 import cn.leansd.site.service.PickupSiteDTO;
+import cn.leansd.site.service.PickupSiteNotAvailableEvent;
 import cn.leansd.site.service.PickupSiteRepository;
 import cn.leansd.site.service.PickupSiteService;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +53,32 @@ public class PickupSiteServiceTest {
         PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
         assertThat(pickupSiteDTO.getLocation()).isEqualTo(nearHqStationSouth);
         assertThat(pickupSiteDTO.getSiteType()).isEqualTo(SiteType.TEMPORARY.name());
+    }
+
+
+    @DisplayName("不存在预设的上车点时，直接把用户出发位置作为临时上车点")
+    @Test
+    public void testDepartureLocationAsPickupSiteWhenNoPickupSiteDefined() {
+        /* no pickup site */
+        PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
+        assertThat(pickupSiteDTO.getLocation()).isEqualTo(nearHqStationSouth);
+        assertThat(pickupSiteDTO.getSiteType()).isEqualTo(SiteType.TEMPORARY.name());
+    }
+    //
+    @DisplayName("临时上车点应该存入数据库并且触发PickupSiteNotAvailable事件")
+    @Test
+    public void testSaveTemporaryPickupSiteAndTriggerPickupSiteNotAvailable() {
+        pickupSiteService.setMaxPickupSiteDistance(0.5);
+        pickupSiteService.findNearestPickupSite(nearHqStationSouth);
+        assertThat(pickupSiteRepository.count()).isEqualTo(1);
+        assertThat(pickupSiteRepository.findAll().get(0).getSiteType()).isEqualTo(SiteType.TEMPORARY);
+        verifyPickupSiteNotAvailableEventPublished();
+    }
+
+    private void verifyPickupSiteNotAvailableEventPublished() {
+        assertThat(applicationEvents.stream(PickupSiteNotAvailableEvent.class))
+                .isNotEmpty()
+                .hasSize(1);
     }
 
     @Autowired
