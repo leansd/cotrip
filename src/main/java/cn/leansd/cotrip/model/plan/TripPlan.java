@@ -25,7 +25,7 @@ public class TripPlan extends AggregateRoot {
     @Embedded
     PlanSpecification planSpecification;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @Nullable
     PickupLocation pickupLocation;
 

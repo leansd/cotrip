@@ -9,6 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripStatus;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static cn.leansd.cotrip.service.TestMap.orientalPear;
-import static cn.leansd.cotrip.service.TestMap.peopleSquare;
+import static cn.leansd.cotrip.service.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,6 +55,7 @@ public class CoTripMatchingResultTest {
         newPlan = new TripPlan(UserId.of("user_id_2"),
                 tripPlanDTO.getPlanSpecification());
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(pickupSiteService.findNearestPickupSite(any())).thenReturn(new PickupSiteDTO(hqAirport));
     }
 
     @DisplayName("匹配成功后应该更新TripPlan的状态")
@@ -85,7 +85,10 @@ public class CoTripMatchingResultTest {
     @DisplayName("匹配成功后应该创建CoTrip，状态应该是CREATED")
     @Test
     public void shouldCreateCoTripWhenMatched() throws InconsistentStatusException {
-        when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan()));
+        when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan(
+                UserId.of("userid"),
+                new PlanSpecification(hqAirport,orientalPear, TimeSpan.builder().build())
+        )));
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
 
         ArgumentCaptor<CoTrip> argumentCaptor= ArgumentCaptor.forClass(CoTrip.class);

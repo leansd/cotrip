@@ -9,6 +9,7 @@ import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import static cn.leansd.cotrip.service.TestMap.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +49,11 @@ public class CoTripMatchingStrategyTest {
     @BeforeEach
     public void setUp(){
         coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService,pickupSiteService);
-        when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan()));
+        when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan(
+                UserId.of("userid"),
+                new PlanSpecification(hqAirport,orientalPear, TimeSpan.builder().build())
+        )));
+        when(pickupSiteService.findNearestPickupSite(any())).thenReturn(new PickupSiteDTO(hqAirport));
     }
 
     @DisplayName("时间地点完全相同可以匹配")

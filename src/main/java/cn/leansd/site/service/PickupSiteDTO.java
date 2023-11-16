@@ -25,4 +25,8 @@ public class PickupSiteDTO {
             this.siteType = nearestPickupSite.getSiteType().toString();
         }
     }
+
+    public PickupSiteDTO(Location location) {
+        this.location = location;
+    }
 }

@@ -74,4 +74,36 @@ public class MatchPickupLocationTest {
             assertThat(tripPlan.getPickupLocation().getLocation()).isEqualTo(hqStationNorth);
         });
     }
+
+    @DisplayName("应该合并同一共乘的邻近出发点")
+    @Test
+    public void shouldMergeNearPickupLocation() throws InconsistentStatusException {
+        PlanSpecification planSpecification_1 = new PlanSpecification(hqStationSouth, peopleSquare, TimeSpan.builder()
+                .start(Y2305010800)
+                .end(Y2305010830)
+                .build(),1);
+        PlanSpecification planSpecification_2 = new PlanSpecification(nearHqStationSouth, peopleSquare, TimeSpan.builder()
+                .start(Y2305010800)
+                .end(Y2305010830)
+                .build(),1);
+
+        existingPlan = new TripPlan(UserId.of("user_id_1"),
+                planSpecification_1);
+        newPlan = new TripPlan(UserId.of("user_id_2"),
+                planSpecification_2);
+
+        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));
+        when(tripPlanRepository.findById(eq(newPlan.getId()))).thenReturn(Optional.of(newPlan));
+
+        when(pickupSiteService.findNearestPickupSite(eq(nearHqStationSouth))).thenReturn(PickupSiteDTO.builder().location(nearHqStationSouth).build());
+        when(pickupSiteService.findNearestPickupSite(eq(hqStationSouth))).thenReturn(PickupSiteDTO.builder().location(hqStationSouth).build());
+        coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
+
+        ArgumentCaptor<List<TripPlan>> tripPlanListCaptor= ArgumentCaptor.forClass(List.class);
+        verify(tripPlanRepository).saveAll(tripPlanListCaptor.capture());
+        List<TripPlan> capturedTripPlans = tripPlanListCaptor.getValue();
+        assertThat(capturedTripPlans.size()).isEqualTo(2);
+        assertThat(capturedTripPlans.get(0).getPickupLocation().getLocation()).isEqualTo(capturedTripPlans.get(1).getPickupLocation().getLocation());
+    }
 }
