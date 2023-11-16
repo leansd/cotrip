@@ -1,27 +1,18 @@
 package cn.leansd.site;
 
-import cn.leansd.base.model.UserId;
-import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.model.plan.*;
-import cn.leansd.cotrip.service.plan.TripPlanDTO;
-import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.site.model.site.SiteType;
 import cn.leansd.site.service.PickupSiteDTO;
+import cn.leansd.site.service.PickupSiteRepository;
 import cn.leansd.site.service.PickupSiteService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static cn.leansd.cotrip.service.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -37,6 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PickupSiteServiceTest {
     @Autowired
     private PickupSiteService pickupSiteService;
+    @Autowired
+    private PickupSiteRepository pickupSiteRepository;
+    @BeforeEach
+    public void setUp() {
+        pickupSiteRepository.deleteAll();
+    }
 
     @DisplayName("存在多个上车点时返回最近的上车点")
     @Test
@@ -45,6 +41,16 @@ public class PickupSiteServiceTest {
         pickupSiteService.addPickupSite(peopleSquare);
         PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
         assertThat(pickupSiteDTO.getLocation()).isEqualTo(hqStationSouth);
+    }
+
+    @DisplayName("最近的上车点超过500米时，直接把用户出发位置作为临时上车点")
+    @Test
+    public void testDepartureLocationAsPickupSiteWhenNearbyPickupSiteIsTooFar() {
+        pickupSiteService.addPickupSite(peopleSquare);
+        pickupSiteService.setMaxPickupSiteDistance(0.5);
+        PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
+        assertThat(pickupSiteDTO.getLocation()).isEqualTo(nearHqStationSouth);
+        assertThat(pickupSiteDTO.getSiteType()).isEqualTo(SiteType.TEMPORARY.name());
     }
 
     @Autowired

@@ -16,11 +16,13 @@ import lombok.NoArgsConstructor;
 public class PickupSiteDTO {
     private String id;
     private Location location;
+    private String siteType;
 
     public PickupSiteDTO(PickupSite nearestPickupSite) {
         if (nearestPickupSite!= null) {
             this.id = nearestPickupSite.getId();
             this.location = nearestPickupSite.getLocation();
+            this.siteType = nearestPickupSite.getSiteType().toString();
         }
     }
 }
