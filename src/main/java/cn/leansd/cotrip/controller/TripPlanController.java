@@ -5,6 +5,7 @@ import cn.leansd.base.model.UserId;
 import cn.leansd.base.session.SessionDTO;
 import cn.leansd.base.session.UserSession;
 import cn.leansd.cotrip.model.plan.TripPlanId;
+import cn.leansd.cotrip.service.plan.NoVehicleOwnerException;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class TripPlanController {
     }
 
     @PostMapping
-    public ResponseEntity<TripPlanDTO> createTripPlan(@RequestBody TripPlanDTO tripPlanDTO, @UserSession SessionDTO session) {
+    public ResponseEntity<TripPlanDTO> createTripPlan(@RequestBody TripPlanDTO tripPlanDTO, @UserSession SessionDTO session) throws NoVehicleOwnerException {
         tripPlanDTO.setUserId(session.getUserId());
         TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         return new ResponseEntity<>(createdTripPlan, HttpStatus.CREATED);

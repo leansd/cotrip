@@ -2,10 +2,8 @@ package cn.leansd.cotrip.service.plan;
 
 import cn.leansd.base.exception.RequestedResourceNotFound;
 import cn.leansd.base.model.UserId;
-import cn.leansd.cotrip.model.plan.TripPlan;
-import cn.leansd.cotrip.model.plan.TripPlanConverter;
-import cn.leansd.cotrip.model.plan.TripPlanId;
-import cn.leansd.cotrip.model.plan.TripPlanRepository;
+import cn.leansd.cotrip.model.plan.*;
+import cn.leansd.vehicle_owner.VehicleOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,18 +14,29 @@ import java.util.Optional;
 @Service
 public class TripPlanService {
     private final TripPlanRepository tripPlanRepository;
+    private final VehicleOwnerService vehicleOwnerService;
 
     @Autowired
-    public TripPlanService(TripPlanRepository tripPlanRepository) {
+    public TripPlanService(TripPlanRepository tripPlanRepository,
+                            VehicleOwnerService vehicleOwnerService) {
         this.tripPlanRepository = tripPlanRepository;
+        this.vehicleOwnerService = vehicleOwnerService;
     }
 
     @Transactional
-    public TripPlanDTO createTripPlan(TripPlanDTO tripPlanDTO) {
+    public TripPlanDTO createTripPlan(TripPlanDTO tripPlanDTO) throws NoVehicleOwnerException {
         TripPlan tripPlan = TripPlanFactory.build(
                 tripPlanDTO);
+        onlyVehicleOwnerCanCreateTripPlan(tripPlan.getCreatorId(),tripPlanDTO.getPlanType());
         tripPlanRepository.save(tripPlan);
         return TripPlanConverter.toDTO(tripPlan);
+    }
+
+    private void onlyVehicleOwnerCanCreateTripPlan(String creatorId, String planType) throws NoVehicleOwnerException {
+        if (!TripPlanType.HITCHHIKING_PROVIDER.name().equals(planType)) return;
+        if (!vehicleOwnerService.isVehicleOwner(creatorId)){
+            throw new NoVehicleOwnerException(creatorId);
+        }
     }
 
 

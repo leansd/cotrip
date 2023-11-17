@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
@@ -58,7 +57,7 @@ public class TripPlanServiceTest {
 
     @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
-    public void testCreateTripPlan() {
+    public void testCreateTripPlan() throws NoVehicleOwnerException {
 
         TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         verifyTripPlanCreated(tripPlan.getId());
@@ -96,7 +95,7 @@ public class TripPlanServiceTest {
 
     @DisplayName("查询用户的所有TripPlan")
     @Test
-    public void testRetrieveAllTripPlans(){
+    public void testRetrieveAllTripPlans() throws NoVehicleOwnerException {
         TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         assertEquals(1, tripPlanService.retrieveTripPlans(UserId.of(tripPlanDTO.getUserId())).size());
     }
