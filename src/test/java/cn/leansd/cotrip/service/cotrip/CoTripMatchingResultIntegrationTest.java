@@ -1,10 +1,7 @@
 package cn.leansd.cotrip.service.cotrip;
 
-import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.base.ws.WebSocketConfig;
 import cn.leansd.base.ws.WebSocketTestTemplate;
-import cn.leansd.base.ws.check_conn.HelloMessage;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
@@ -20,19 +17,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
-import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import static cn.leansd.base.RestTemplateUtil.buildHeaderWithUserId;
 import static cn.leansd.cotrip.service.TestMap.orientalPear;
 import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * 本测试的能力和CoTripMatchingResultMvcTest是一样的，
@@ -64,14 +57,14 @@ public class CoTripMatchingResultIntegrationTest {
 
         LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
         LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
+        PlanSpecification planSpec = new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
-                .build(),1));
-        TripPlan firstPlan = new TripPlan(UserId.of("user_id_1"),
-                tripPlanDTO.getPlanSpecification());
-        TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
-                tripPlanDTO.getPlanSpecification());
+                .build(), 1);
+        TripPlan firstPlan = new TripPlan(TripPlanDTO.builder().planSpecification(planSpec)
+                .planType(TripPlanType.RIDE_SHARING.name()).userId("user_id_1").build());
+        TripPlan secondPlan = new TripPlan(TripPlanDTO.builder().planSpecification(planSpec)
+                .planType(TripPlanType.RIDE_SHARING.name()).userId("user_id_2").build());
 
         ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity(urlTripPlan, new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
         assertThat(response_1.getStatusCode()).isEqualTo(HttpStatus.CREATED);

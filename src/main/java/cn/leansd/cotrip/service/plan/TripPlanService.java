@@ -2,8 +2,10 @@ package cn.leansd.cotrip.service.plan;
 
 import cn.leansd.base.exception.RequestedResourceNotFound;
 import cn.leansd.base.model.UserId;
-import cn.leansd.cotrip.model.cotrip.CoTripId;
-import cn.leansd.cotrip.model.plan.*;
+import cn.leansd.cotrip.model.plan.TripPlan;
+import cn.leansd.cotrip.model.plan.TripPlanConverter;
+import cn.leansd.cotrip.model.plan.TripPlanId;
+import cn.leansd.cotrip.model.plan.TripPlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,9 @@ public class TripPlanService {
     }
 
     @Transactional
-    public TripPlanDTO createTripPlan(TripPlanDTO tripPlanDTO, UserId creatorId) {
-        PlanSpecification spec = tripPlanDTO.getPlanSpecification();
-        TripPlan tripPlan = TripPlanFactory.build(creatorId,
-                spec);
+    public TripPlanDTO createTripPlan(TripPlanDTO tripPlanDTO) {
+        TripPlan tripPlan = TripPlanFactory.build(
+                tripPlanDTO);
         tripPlanRepository.save(tripPlan);
         return TripPlanConverter.toDTO(tripPlan);
     }

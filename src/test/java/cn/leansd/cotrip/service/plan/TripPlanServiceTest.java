@@ -1,11 +1,9 @@
 package cn.leansd.cotrip.service.plan;
 
-import cn.leansd.base.TestEventListener;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.plan.*;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +24,8 @@ import static cn.leansd.cotrip.service.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -36,6 +35,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RecordApplicationEvents
 public class TripPlanServiceTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
+    TripPlanDTO tripPlanDTO = TripPlanDTO.builder().planSpecification(
+                    new PlanSpecification(hqAirport, peopleSquare,
+                            TimeSpan.builder()
+                                    .start(LocalDateTime.of(2023, 5, 1, 8, 0))
+                                    .end(LocalDateTime.of(2023, 5, 1, 8, 30))
+                                    .build(),1))
+            .planType(TripPlanType.RIDE_SHARING.name())
+            .userId("user-id-1")
+            .build();
 
     @Autowired
     private TripPlanService tripPlanService;
@@ -51,11 +59,8 @@ public class TripPlanServiceTest {
     @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
     public void testCreateTripPlan() {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
-                .start(LocalDateTime.of(2023, 5, 1, 8, 0))
-                .end(LocalDateTime.of(2023, 5, 1, 8, 30))
-                .build(),1));
-        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, UserId.of("user_1"));
+
+        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         verifyTripPlanCreated(tripPlan.getId());
         verifyTripPlanEventPublished(tripPlan.getId());
     }
@@ -92,23 +97,14 @@ public class TripPlanServiceTest {
     @DisplayName("查询用户的所有TripPlan")
     @Test
     public void testRetrieveAllTripPlans(){
-        UserId userId = UserId.of("user_1");
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
-                .start(LocalDateTime.of(2023, 5, 1, 8, 0))
-                .end(LocalDateTime.of(2023, 5, 1, 8, 30))
-                .build(),1));
-        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, userId);
-        assertEquals(1, tripPlanService.retrieveTripPlans(userId).size());
+        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
+        assertEquals(1, tripPlanService.retrieveTripPlans(UserId.of(tripPlanDTO.getUserId())).size());
     }
 
     @DisplayName("取消已创建的TripPlan应该返回200")
     @Test
     public void testCancelTripPlan() throws Exception {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
-                .start(LocalDateTime.of(2023, 5, 1, 8, 0))
-                .end(LocalDateTime.of(2023, 5, 1, 8, 30))
-                .build(),1));
-        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO, UserId.of("user_1"));
+        TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         mockMvc.perform(delete(urlTripPlan + tripPlan.getId())
                 .header("user-id", "user-id-1"))
                 .andExpect(status().isOk());

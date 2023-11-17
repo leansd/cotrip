@@ -7,11 +7,10 @@ import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.cotrip.CoTrip;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
-import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
+import cn.leansd.geo.GeoService;
 import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteService;
-import cn.leansd.geo.GeoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,23 +49,27 @@ public class CoTripMatchingStrategyTest {
     public void setUp(){
         coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService,pickupSiteService);
         when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan(
-                UserId.of("userid"),
-                new PlanSpecification(hqAirport,orientalPear, TimeSpan.builder().build())
-        )));
+                UserId.of("user_id_1"),
+                new PlanSpecification(
+                        hqAirport,orientalPear,TimeSpan.builder().build(),1),
+                TripPlanType.RIDE_SHARING)));
         when(pickupSiteService.findNearestPickupSite(any())).thenReturn(new PickupSiteDTO(hqAirport));
     }
 
     @DisplayName("时间地点完全相同可以匹配")
     @Test
     public void testMatchingWithExactSamePlan() throws InconsistentStatusException {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
+        PlanSpecification planSpec = new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
-                .build(),1));
-        TripPlan existingPlan = new TripPlan(UserId.of("user_id_1"),
-                tripPlanDTO.getPlanSpecification());
+                .build(), 1);
+        TripPlan existingPlan = new TripPlan(
+                UserId.of("user_id_1"),
+                planSpec,
+                TripPlanType.RIDE_SHARING);
         TripPlan newPlan = new TripPlan(UserId.of("user_id_2"),
-                tripPlanDTO.getPlanSpecification());
+                planSpec,
+                TripPlanType.RIDE_SHARING);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
         verifyCoTripCreatedEventPublished();
@@ -97,7 +100,7 @@ public class CoTripMatchingStrategyTest {
                         .build(),1);
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
-                specA);
+                specA,TripPlanType.RIDE_SHARING);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
@@ -108,7 +111,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010900)
                         .build(),1);
         TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
-                specB);
+                specB,TripPlanType.RIDE_SHARING);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
         verifyNoCoTripCreatedEventPublished();
     }
@@ -125,7 +128,7 @@ public class CoTripMatchingStrategyTest {
                         .build(),3);
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
-                specA);
+                specA,TripPlanType.RIDE_SHARING);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
@@ -136,7 +139,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010900)
                         .build(),1);
         TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
-                specB);
+                specB,TripPlanType.RIDE_SHARING);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
         verifyCoTripCreatedEventPublished();
     }
@@ -153,7 +156,7 @@ public class CoTripMatchingStrategyTest {
                         .build(),3);
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
-                specA);
+                specA,TripPlanType.RIDE_SHARING);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
@@ -164,7 +167,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010900)
                         .build(),2);
         TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
-                specB);
+                specB,TripPlanType.RIDE_SHARING);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
 
         verifyNoCoTripCreatedEventPublished();
@@ -182,7 +185,7 @@ public class CoTripMatchingStrategyTest {
                         .build(),1);
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
-                specA);
+                specA,TripPlanType.RIDE_SHARING);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
@@ -193,7 +196,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010900)
                         .build(),1);
         TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
-                specB);
+                specB,TripPlanType.RIDE_SHARING);
         Mockito.when(geoService.getDistance(orientalPear, hqAirport)).thenReturn(21.0);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
         verifyNoCoTripCreatedEventPublished();
@@ -211,7 +214,7 @@ public class CoTripMatchingStrategyTest {
                         .build(),1);
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
-                specA);
+                specA,TripPlanType.RIDE_SHARING);
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
@@ -222,7 +225,7 @@ public class CoTripMatchingStrategyTest {
                         .end(Y2305010900)
                         .build(),1);
         TripPlan newPlanB = new TripPlan(UserId.of("user_id_2"),
-                specB);
+                specB,TripPlanType.RIDE_SHARING);
         Mockito.when(geoService.getDistance(orientalPear, oceanAquarium)).thenReturn(0.5);
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlanB)));
         verifyCoTripCreatedEventPublished();

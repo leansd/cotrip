@@ -15,11 +15,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class TripPlan extends AggregateRoot {
-    public TripPlan(UserId creatorId, PlanSpecification planSpecification) {
+    public TripPlan(TripPlanDTO tripPlanDTO) {
+        this();
+        this.planSpecification = tripPlanDTO.getPlanSpecification();
+        this.planType = TripPlanType.valueOf(tripPlanDTO.getPlanType());
+        this.status = TripPlanStatus.WAITING_MATCH;
+        addCreationInfo(UserId.of(tripPlanDTO.getUserId()));
+    }
+
+    public TripPlan(UserId userId, PlanSpecification planSpecification, TripPlanType tripPlanType) {
         this();
         this.planSpecification = planSpecification;
+        this.planType = tripPlanType;
         this.status = TripPlanStatus.WAITING_MATCH;
-        addCreationInfo(creatorId);
+        addCreationInfo(userId);
+
     }
 
     @Embedded
@@ -31,6 +41,11 @@ public class TripPlan extends AggregateRoot {
 
     @Enumerated(EnumType.STRING)
     private TripPlanStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private TripPlanType planType;
+
+
 
     public void joinCoTrip(CoTripId coTripId) {
         this.coTripId = coTripId;

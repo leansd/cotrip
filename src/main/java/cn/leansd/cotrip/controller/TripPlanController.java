@@ -26,7 +26,8 @@ public class TripPlanController {
 
     @PostMapping
     public ResponseEntity<TripPlanDTO> createTripPlan(@RequestBody TripPlanDTO tripPlanDTO, @UserSession SessionDTO session) {
-        TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO,UserId.of(session.getUserId()));
+        tripPlanDTO.setUserId(session.getUserId());
+        TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         return new ResponseEntity<>(createdTripPlan, HttpStatus.CREATED);
     }
 

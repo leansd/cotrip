@@ -1,11 +1,13 @@
 package cn.leansd.cotrip.service.cotrip;
 
-import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.base.ws.WebSocketConfig;
 import cn.leansd.base.ws.WebSocketTestTemplate;
 import cn.leansd.cotrip.controller.TripPlanStatusNotificationController;
-import cn.leansd.cotrip.model.plan.*;
+import cn.leansd.cotrip.model.plan.PlanSpecification;
+import cn.leansd.cotrip.model.plan.TripPlan;
+import cn.leansd.cotrip.model.plan.TripPlanJoinedEvent;
+import cn.leansd.cotrip.model.plan.TripPlanType;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,14 +59,15 @@ public class CoTripMatchingWebSocketIntegrationTest {
 
         LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
         LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
+        PlanSpecification planSpecification  = new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
-                .build(), 1));
-        TripPlan firstPlan = new TripPlan(UserId.of("user_id_1"),
-                tripPlanDTO.getPlanSpecification());
-        TripPlan secondPlan = new TripPlan(UserId.of("user_id_2"),
-                tripPlanDTO.getPlanSpecification());
+                .build(), 1);
+
+        TripPlan firstPlan = new TripPlan(TripPlanDTO.builder()
+                .planSpecification(planSpecification).userId("user_id_1").planType(TripPlanType.RIDE_SHARING.name()).build());
+        TripPlan secondPlan = new TripPlan(TripPlanDTO.builder()
+                .planSpecification(planSpecification).userId("user_id_2").planType(TripPlanType.RIDE_SHARING.name()).build());
 
         ResponseEntity<TripPlanDTO> response_1 = restTemplate.postForEntity(urlTripPlan, new HttpEntity<>(firstPlan, buildHeaderWithUserId("user-id-1")), TripPlanDTO.class);
         assertThat(response_1.getStatusCode()).isEqualTo(HttpStatus.CREATED);

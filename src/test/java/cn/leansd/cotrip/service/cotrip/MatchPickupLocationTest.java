@@ -6,10 +6,10 @@ import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.model.cotrip.CoTripRepository;
 import cn.leansd.cotrip.model.plan.*;
 import cn.leansd.cotrip.service.plan.TripPlanService;
-import cn.leansd.site.service.PickupSiteDTO;
-import cn.leansd.site.service.PickupSiteService;
 import cn.leansd.geo.GeoService;
 import cn.leansd.geo.haversine.HaversineGeoService;
+import cn.leansd.site.service.PickupSiteDTO;
+import cn.leansd.site.service.PickupSiteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,10 +55,12 @@ public class MatchPickupLocationTest {
                 .end(Y2305010830)
                 .build(),1);
 
-        existingPlan = new TripPlan(UserId.of("user_id_1"),
-                planSpecification);
-        newPlan = new TripPlan(UserId.of("user_id_2"),
-                planSpecification);
+        TripPlan existingPlan = new TripPlan(UserId.of("user_id_1"),
+                planSpecification,
+                TripPlanType.RIDE_SHARING);
+        TripPlan newPlan = new TripPlan(UserId.of("user_id_2"),
+                planSpecification,
+                TripPlanType.RIDE_SHARING);
 
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
         when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));
@@ -87,10 +89,12 @@ public class MatchPickupLocationTest {
                 .end(Y2305010830)
                 .build(),1);
 
-        existingPlan = new TripPlan(UserId.of("user_id_1"),
-                planSpecification_1);
-        newPlan = new TripPlan(UserId.of("user_id_2"),
-                planSpecification_2);
+        TripPlan existingPlan = new TripPlan(UserId.of("user_id_1"),
+                planSpecification_1,
+                TripPlanType.RIDE_SHARING);
+        TripPlan newPlan = new TripPlan(UserId.of("user_id_2"),
+                planSpecification_2,
+                TripPlanType.RIDE_SHARING);
 
         when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
         when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));

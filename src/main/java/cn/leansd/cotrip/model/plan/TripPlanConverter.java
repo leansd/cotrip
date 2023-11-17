@@ -11,14 +11,10 @@ public class TripPlanConverter {
         dto.setId(entity.getId());
         dto.setPlanSpecification(entity.getPlanSpecification());
         dto.setStatus(entity.getStatus().name());
+        dto.setPlanType(entity.getPlanType().name());
+        dto.setUserId(entity.getCreatorId());
         return dto;
     }
-    public static TripPlan toEntity(TripPlanDTO dto) {
-        TripPlan tripPlan = new TripPlan();
-        tripPlan.setPlanSpecification(dto.getPlanSpecification());
-        return tripPlan;
-    }
-
     public static List<TripPlanDTO> toDTOs(List<TripPlan> tripPlans) {
         return tripPlans.stream().map(TripPlanConverter::toDTO).collect(java.util.stream.Collectors.toList());
     }
