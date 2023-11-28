@@ -5,6 +5,7 @@ import cn.leansd.base.model.UserId;
 import cn.leansd.base.session.SessionDTO;
 import cn.leansd.base.session.UserSession;
 import cn.leansd.cotrip.model.plan.TripPlanId;
+import cn.leansd.cotrip.model.plan.TripPlanType;
 import cn.leansd.cotrip.service.plan.NoVehicleOwnerException;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
 import cn.leansd.cotrip.service.plan.TripPlanService;
@@ -28,6 +29,10 @@ public class TripPlanController {
     @PostMapping
     public ResponseEntity<TripPlanDTO> createTripPlan(@RequestBody TripPlanDTO tripPlanDTO, @UserSession SessionDTO session) throws NoVehicleOwnerException {
         tripPlanDTO.setUserId(session.getUserId());
+        //后向兼容旧版本接口
+        if (tripPlanDTO.getPlanType() == null) {
+            tripPlanDTO.setPlanType(TripPlanType.RIDE_SHARING.name());
+        }
         TripPlanDTO createdTripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         return new ResponseEntity<>(createdTripPlan, HttpStatus.CREATED);
     }

@@ -9,11 +9,13 @@ import cn.leansd.cotrip.model.plan.PickupLocation;
 import cn.leansd.cotrip.model.plan.TripPlan;
 import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leansd.cotrip.model.plan.TripPlanRepository;
+import cn.leansd.cotrip.service.cotrip.filter.CandidatesFilterFactory;
+import cn.leansd.cotrip.service.cotrip.filter.CandidatesFilter;
 import cn.leansd.cotrip.service.plan.TripPlanDTO;
+import cn.leansd.geo.GeoService;
 import cn.leansd.geo.haversine.HaversineDistance;
 import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteService;
-import cn.leansd.geo.GeoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -47,17 +49,20 @@ public class CoTripMatchingService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void receivedTripPlanCreatedEvent(TripPlanCreatedEvent event) throws InconsistentStatusException {
-        CoTrip coTrip = matchExistingTripPlan(event.getData());
-        if (coTrip!=null){
-            matchSuccess(coTrip);
-        }
+        List<TripPlan> tripPlans = filter(event.getData());
+        CoTrip coTrip = match(tripPlans, event.getData());
+        execute(coTrip);
     }
 
-    private void matchSuccess(CoTrip coTrip) {
+    private List<TripPlan> filter(TripPlanDTO tripPlan){
+        CandidatesFilter filter = CandidatesFilterFactory.build(tripPlan.getPlanType(),tripPlanRepository);
+        return filter.filter(tripPlan);
+    }
+    private void execute(CoTrip coTrip) {
+        if (coTrip ==null) return;
         updateTripPlans(CoTripId.of(coTrip.getId()),coTrip.getTripPlanIdList());
         coTripRepository.save(coTrip);
     }
-
     private void updateTripPlans(CoTripId coTripId, List<String> tripPlanIds) {
         List<TripPlan> tripPlans = tripPlanIds.stream().map(tripPlanId->
         {
@@ -77,21 +82,20 @@ public class CoTripMatchingService {
         tripPlanRepository.saveAll(tripPlans);
     }
 
-    private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {
-        List<TripPlan> tripPlans = tripPlanRepository.findAllNotMatching();
-        if (tripPlans.size() == 0) return null;
+    private CoTrip match(List<TripPlan> candidates, TripPlanDTO newPlan) {
+        if (candidates.size() == 0) return null;
         List<String> matchedTripPlanIds = new ArrayList<>();
-        for (TripPlan plan : tripPlans) {
-            if (plan.getId().equals(tripPlan.getId())) continue;
-            if (departureTimeNotMatch(plan, tripPlan)) continue;
-            if (exceedMaxSeats(plan, tripPlan)) continue;
-            if (startLocationNotMatch(plan, tripPlan)) continue;
-            if (endLocationNotMatch(plan, tripPlan)) continue;
-            matchedTripPlanIds.add(plan.getId());
+        for (TripPlan candidate : candidates) {
+            if (candidate.getId().equals(newPlan.getId())) continue;
+            if (departureTimeNotMatch(candidate, newPlan)) continue;
+            if (exceedMaxSeats(candidate, newPlan)) continue;
+            if (startLocationNotMatch(candidate, newPlan)) continue;
+            if (endLocationNotMatch(candidate, newPlan)) continue;
+            matchedTripPlanIds.add(candidate.getId());
             break; //当前阶段仅支持匹配一个
         }
         if (matchedTripPlanIds.size() == 0) return null;
-        matchedTripPlanIds.add(tripPlan.getId());
+        matchedTripPlanIds.add(newPlan.getId());
         return CoTripFactory.build(matchedTripPlanIds);
     }
 

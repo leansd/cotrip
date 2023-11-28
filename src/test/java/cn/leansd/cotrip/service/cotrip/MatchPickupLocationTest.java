@@ -23,8 +23,7 @@ import java.util.Optional;
 
 import static cn.leansd.cotrip.service.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.notNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +61,7 @@ public class MatchPickupLocationTest {
                 planSpecification,
                 TripPlanType.RIDE_SHARING);
 
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlan));
         when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));
         when(tripPlanRepository.findById(eq(newPlan.getId()))).thenReturn(Optional.of(newPlan));
 
@@ -96,7 +95,7 @@ public class MatchPickupLocationTest {
                 planSpecification_2,
                 TripPlanType.RIDE_SHARING);
 
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlan));
         when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));
         when(tripPlanRepository.findById(eq(newPlan.getId()))).thenReturn(Optional.of(newPlan));
 

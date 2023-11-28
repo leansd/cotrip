@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface TripPlanRepository extends JpaRepository<TripPlan, String> {
-    @Query("select tp from TripPlan tp where tp.status = 'WAITING_MATCH'")
-    List<TripPlan> findAllNotMatching();
+    @Query("select tp from TripPlan tp where tp.status = 'WAITING_MATCH' and tp.planType=:planType")
+    List<TripPlan> findAllMatchCandidates(TripPlanType planType);
     List<TripPlan> findAllByCreatorId(String id);
 }

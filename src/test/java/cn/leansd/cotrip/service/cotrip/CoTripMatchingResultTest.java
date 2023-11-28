@@ -53,7 +53,7 @@ public class CoTripMatchingResultTest {
                 planSpec,TripPlanType.RIDE_SHARING);
         newPlan = new TripPlan(UserId.of("user_id_2"),
                 planSpec,TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlan));
         when(pickupSiteService.findNearestPickupSite(any())).thenReturn(new PickupSiteDTO(hqAirport));
     }
 

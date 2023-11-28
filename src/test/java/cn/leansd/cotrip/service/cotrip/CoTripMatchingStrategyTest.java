@@ -70,7 +70,7 @@ public class CoTripMatchingStrategyTest {
         TripPlan newPlan = new TripPlan(UserId.of("user_id_2"),
                 planSpec,
                 TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlan));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlan));
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
         verifyCoTripCreatedEventPublished();
     }
@@ -101,7 +101,7 @@ public class CoTripMatchingStrategyTest {
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA,TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
         PlanSpecification specB = new PlanSpecification(
@@ -129,7 +129,7 @@ public class CoTripMatchingStrategyTest {
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA,TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
         PlanSpecification specB = new PlanSpecification(
@@ -157,7 +157,7 @@ public class CoTripMatchingStrategyTest {
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA,TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
         PlanSpecification specB = new PlanSpecification(
@@ -186,7 +186,7 @@ public class CoTripMatchingStrategyTest {
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA,TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
         PlanSpecification specB = new PlanSpecification(
@@ -215,7 +215,7 @@ public class CoTripMatchingStrategyTest {
 
         TripPlan existingPlanA = new TripPlan(UserId.of("user_id_1"),
                 specA,TripPlanType.RIDE_SHARING);
-        when(tripPlanRepository.findAllNotMatching()).thenReturn(Arrays.asList(existingPlanA));
+        when(tripPlanRepository.findAllMatchCandidates(any())).thenReturn(Arrays.asList(existingPlanA));
 
         // Given 出行计划B
         PlanSpecification specB = new PlanSpecification(
