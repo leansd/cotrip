@@ -18,7 +18,7 @@ public abstract class DomainEntity {
         this.id = UUID.randomUUID().toString();
     }
 
-    public DomainEntity(String id) {
+    protected DomainEntity(String id) {
         this.id = id;
     }
 

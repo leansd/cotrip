@@ -8,14 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SpringEventPublisher implements EventPublisher {
-
-    private final ApplicationEventPublisher applicationEventPublisher;
-
-    @Autowired
-    public SpringEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
-
     @Override
     public void publishEvent(AggregateRoot object, DomainEvent event) {
         object.registerEvent(event);

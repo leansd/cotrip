@@ -14,9 +14,9 @@ import java.util.List;
 @MappedSuperclass
 public abstract class AggregateRoot extends DomainEntity {
     @Transient
-    private final transient List<Object> domainEvents = new ArrayList();
+    private final transient List<Object> domainEvents = new ArrayList<>();
 
-    public AggregateRoot() {
+    protected AggregateRoot() {
     }
 
     public void registerEvent(DomainEvent event) {

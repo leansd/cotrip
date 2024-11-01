@@ -8,7 +8,7 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class ValueObject {
     @Id
-    String id;
+    protected String id;
     @Override
     public abstract boolean equals(Object o);
     @Override
@@ -18,7 +18,7 @@ public abstract class ValueObject {
         this.id = UUID.randomUUID().toString();
     }
 
-    public ValueObject(String id) {
+    protected ValueObject(String id) {
         this.id = id;
     }
 

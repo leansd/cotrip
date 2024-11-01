@@ -31,7 +31,6 @@ public class UserSessionArgumentResolver implements HandlerMethodArgumentResolve
                                   WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String userId = userIdResolver.resolveUserId(servletRequest);
-        SessionDTO session = new SessionDTO(userId);
-        return session;
+        return new SessionDTO(userId);
     }
 }

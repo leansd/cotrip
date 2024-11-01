@@ -66,7 +66,7 @@ public class CoTripMatchingService {
             PickupSiteDTO siteLocation = pickupSiteService.findNearestPickupSite(tripPlan.getPlanSpecification().getDepartureLocation());
             tripPlan.setPickupLocation(new PickupLocation(siteLocation.getLocation()));
             return tripPlan;
-        }).collect(Collectors.toList());
+        }).toList();
 
         assert tripPlans.size() == 2; //当前阶段我们仅支持2个出行计划合并为1个共乘。
         if (thresholdOfMergePickupSite>

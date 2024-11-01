@@ -11,8 +11,11 @@ import java.util.Comparator;
 
 @Service
 public class PickupSiteService {
-    @Autowired PickupSiteRepository pickupSiteRepository;
+    private PickupSiteRepository pickupSiteRepository;
     private double maxDistance = 0.5; // 0.5km
+    public PickupSiteService(@Autowired PickupSiteRepository pickupSiteRepository) {
+        this.pickupSiteRepository = pickupSiteRepository;
+    }
     public PickupSiteDTO findNearestPickupSite(Location location) {
         PickupSite nearestSite =  pickupSiteRepository.findAll().stream()
                 .min(Comparator.comparingDouble(pickupSite -> HaversineDistance.between(

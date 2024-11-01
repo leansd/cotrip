@@ -12,10 +12,12 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Controller
 public class TripPlanStatusNotificationController {
     Logger logger = LoggerFactory.getLogger(TripPlanStatusNotificationController.class);
-    @Autowired
     private SimpMessagingTemplate template;
     public static final String BROADCAST_UPDATE_TOPIC = "/topic/updates";
     public static final String UPDATE_QUEUE = "/queue/status";
+    public TripPlanStatusNotificationController(@Autowired SimpMessagingTemplate template) {
+        this.template = template;
+    }
     @TransactionalEventListener
     public void receivedTripPlanJoinedEvent(TripPlanJoinedEvent event) throws InconsistentStatusException {
         template.convertAndSendToUser(event.getData().getUserId(), UPDATE_QUEUE, event);
