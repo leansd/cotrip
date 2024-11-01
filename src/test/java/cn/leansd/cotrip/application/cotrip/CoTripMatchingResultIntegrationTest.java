@@ -3,9 +3,12 @@ package cn.leansd.cotrip.application.cotrip;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.base.ws.WebSocketTestTemplate;
-import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
-import cn.leansd.cotrip.domain.plan.*;
 import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
+import cn.leansd.cotrip.domain.plan.PlanSpecification;
+import cn.leansd.cotrip.domain.plan.TripPlan;
+import cn.leansd.cotrip.domain.plan.TripPlanRepository;
+import cn.leansd.cotrip.domain.plan.TripPlanStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +30,6 @@ import static cn.leansd.base.RestTemplateUtil.buildHeaderWithUserId;
 import static cn.leansd.cotrip.application.TestMap.orientalPear;
 import static cn.leansd.cotrip.application.TestMap.peopleSquare;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * 本测试的能力和CoTripMatchingResultMvcTest是一样的，

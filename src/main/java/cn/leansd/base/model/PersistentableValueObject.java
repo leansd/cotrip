@@ -1,6 +1,5 @@
 package cn.leansd.base.model;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 import java.util.UUID;

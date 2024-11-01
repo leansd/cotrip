@@ -1,10 +1,10 @@
 package cn.leansd.site;
 
-import cn.leansd.site.domain.site.SiteType;
 import cn.leansd.site.application.PickupSiteDTO;
 import cn.leansd.site.application.PickupSiteNotAvailableEvent;
 import cn.leansd.site.application.PickupSiteRepository;
 import cn.leansd.site.application.PickupSiteService;
+import cn.leansd.site.domain.site.SiteType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static cn.leansd.cotrip.application.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

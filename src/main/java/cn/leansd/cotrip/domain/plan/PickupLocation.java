@@ -2,7 +2,8 @@ package cn.leansd.cotrip.domain.plan;
 
 import cn.leansd.base.model.ValueObject;
 import cn.leansd.geo.Location;
-import jakarta.persistence.*;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

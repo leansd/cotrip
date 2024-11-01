@@ -2,8 +2,8 @@ package cn.leansd.cotrip.domain.plan;
 
 import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.UserId;
-import cn.leansd.cotrip.domain.cotrip.CoTripId;
 import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.domain.cotrip.CoTripId;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
