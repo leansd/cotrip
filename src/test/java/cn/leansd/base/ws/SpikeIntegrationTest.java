@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
-public class SpikeIntegrationTest {
+class SpikeIntegrationTest {
     @Value(value="${local.server.port}")
     private int port;
 
@@ -35,7 +35,7 @@ public class SpikeIntegrationTest {
     Logger logger = Logger.getLogger(SpikeIntegrationTest.class.getName());
     @DisplayName("验证WebSocket发送给单一用户通知的能力")
     @Test
-    public void testWebSocketSendToSingleUser() throws Exception {
+    void testWebSocketSendToSingleUser() throws Exception {
         WebSocketTestTemplate testTemplate = new WebSocketTestTemplate("ws://localhost:" + this.port + WebSocketConfig.WS_ENDPOINT,
                 "user-id-1",
                 "/queue/status",

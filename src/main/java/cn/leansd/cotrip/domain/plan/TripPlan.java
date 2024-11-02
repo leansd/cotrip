@@ -39,9 +39,7 @@ public class TripPlan extends AggregateRoot {
     }
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "id", column = @Column(name = "cotrip_id")),
-    })
+    @AttributeOverride(name = "id", column = @Column(name = "cotrip_id"))
     private CoTripId coTripId;
 
     public void cancel() {

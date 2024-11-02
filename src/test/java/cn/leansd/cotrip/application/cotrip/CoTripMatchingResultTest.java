@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CoTripMatchingResultTest {
+class CoTripMatchingResultTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
     TripPlanService tripPlanService = Mockito.mock(TripPlanService.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
@@ -44,7 +44,7 @@ public class CoTripMatchingResultTest {
     TripPlan existingPlan  = null;
     TripPlan newPlan = null;
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService,pickupSiteService);
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
@@ -60,7 +60,7 @@ public class CoTripMatchingResultTest {
 
     @DisplayName("匹配成功后应该更新TripPlan的状态")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatched() throws InconsistentStatusException {
+    void shouldChangeTripPlanStatusWhenMatched() throws InconsistentStatusException {
         when(tripPlanRepository.findById(eq(existingPlan.getId()))).thenReturn(Optional.of(existingPlan));
         when(tripPlanRepository.findById(eq(newPlan.getId()))).thenReturn(Optional.of(newPlan));
         coTripMatchingService.receivedTripPlanCreatedEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(newPlan)));
@@ -84,7 +84,7 @@ public class CoTripMatchingResultTest {
 
     @DisplayName("匹配成功后应该创建CoTrip，状态应该是CREATED")
     @Test
-    public void shouldCreateCoTripWhenMatched() throws InconsistentStatusException {
+    void shouldCreateCoTripWhenMatched() throws InconsistentStatusException {
         when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan(
                 UserId.of("userid"),
                 new PlanSpecification(hqAirport,orientalPear, TimeSpan.builder().build())

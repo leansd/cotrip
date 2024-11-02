@@ -7,6 +7,8 @@ import cn.leansd.cotrip.domain.plan.TripPlanConverter;
 import cn.leansd.cotrip.domain.plan.TripPlanCreatedEvent;
 
 public class TripPlanFactory {
+    private TripPlanFactory() {
+    }
     public static TripPlan build(UserId creatorId, PlanSpecification spec) {
         TripPlan plan = new TripPlan(creatorId, spec);
         plan.registerEvent(new TripPlanCreatedEvent(TripPlanConverter.toDTO(plan)));

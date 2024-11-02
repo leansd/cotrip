@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MatchPickupLocationTest {
+class MatchPickupLocationTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
     TripPlanService tripPlanService = Mockito.mock(TripPlanService.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
@@ -43,13 +43,13 @@ public class MatchPickupLocationTest {
     TripPlan existingPlan  = null;
     TripPlan newPlan = null;
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         coTripMatchingService = new CoTripMatchingService(tripPlanRepository,  coTripRepository, geoService,pickupSiteService);
     }
 
     @DisplayName("匹配成功后，应该更新TripPlan的pickup信息")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatched() throws InconsistentStatusException {
+    void shouldChangeTripPlanStatusWhenMatched() throws InconsistentStatusException {
         PlanSpecification planSpecification = new PlanSpecification(nearHqStationSouth, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
@@ -77,7 +77,7 @@ public class MatchPickupLocationTest {
 
     @DisplayName("应该合并同一共乘的邻近出发点")
     @Test
-    public void shouldMergeNearPickupLocation() throws InconsistentStatusException {
+    void shouldMergeNearPickupLocation() throws InconsistentStatusException {
         PlanSpecification planSpecification_1 = new PlanSpecification(hqStationSouth, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)

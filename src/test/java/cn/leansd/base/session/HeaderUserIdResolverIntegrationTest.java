@@ -14,13 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
-public class HeaderUserIdResolverIntegrationTest {
+class HeaderUserIdResolverIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void requestWithHeaderId_ShouldResolveUserId() throws Exception {
+    void requestWithHeaderId_ShouldResolveUserId() throws Exception {
         mockMvc.perform(get("/test/session").header("user-id", "123456"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("123456"));

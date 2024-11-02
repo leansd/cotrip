@@ -10,7 +10,7 @@ import java.util.UUID;
 public abstract class DomainEvent {
     private String id;
     private final Instant occurredOn;
-    public DomainEvent() {
+    protected DomainEvent() {
         this.id = UUID.randomUUID().toString();
         this.occurredOn = Instant.now();
     }

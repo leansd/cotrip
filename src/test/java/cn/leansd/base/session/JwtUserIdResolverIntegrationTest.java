@@ -14,13 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class JwtUserIdResolverIntegrationTest {
+class JwtUserIdResolverIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void requestWithJwtToken_ShouldResolveUserId() throws Exception {
+    void requestWithJwtToken_ShouldResolveUserId() throws Exception {
         Jwt jwt = Jwt.withTokenValue("token")
                 .header("alg", "none")
                 .claim("sub", "123456")

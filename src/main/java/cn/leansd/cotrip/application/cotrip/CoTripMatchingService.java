@@ -30,7 +30,7 @@ public class CoTripMatchingService {
     private final CoTripRepository coTripRepository;
     private final GeoService geoService;
     private final PickupSiteService pickupSiteService;
-    private final double thresholdOfMergePickupSite = 0.5; //KM;
+    private final double thresholdOfMergePickupSite = 0.5; /*Unit(KM). Could be configured in future*/
 
     @Autowired
     public CoTripMatchingService(TripPlanRepository tripPlanRepository,
@@ -78,7 +78,7 @@ public class CoTripMatchingService {
 
     private CoTrip matchExistingTripPlan(TripPlanDTO tripPlan) {
         List<TripPlan> tripPlans = tripPlanRepository.findAllNotMatching();
-        if (tripPlans.size() == 0) return null;
+        if (tripPlans.isEmpty()) return null;
         List<String> matchedTripPlanIds = new ArrayList<>();
         for (TripPlan plan : tripPlans) {
             if (plan.getId().equals(tripPlan.getId())) continue;
@@ -89,7 +89,7 @@ public class CoTripMatchingService {
             matchedTripPlanIds.add(plan.getId());
             break; //当前阶段仅支持匹配一个
         }
-        if (matchedTripPlanIds.size() == 0) return null;
+        if (matchedTripPlanIds.isEmpty()) return null;
         matchedTripPlanIds.add(tripPlan.getId());
         return CoTripFactory.build(matchedTripPlanIds);
     }
@@ -104,10 +104,8 @@ public class CoTripMatchingService {
     }
 
     private boolean startLocationNotMatch(TripPlan existPlan, TripPlanDTO newPlan) {
-        if (geoService.getDistance(existPlan.getPlanSpecification().getDepartureLocation(),
-                newPlan.getPlanSpecification().getDepartureLocation()) > START_LOCATION_LIMIT)
-            return true;
-        return false;
+        return (geoService.getDistance(existPlan.getPlanSpecification().getDepartureLocation(),
+                newPlan.getPlanSpecification().getDepartureLocation()) > START_LOCATION_LIMIT);
     }
 
     private boolean exceedMaxSeats(TripPlan plan, TripPlanDTO tripPlan) {

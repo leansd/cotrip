@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 @RecordApplicationEvents
-public class TripPlanServiceTest {
+class TripPlanServiceTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
 
     @Autowired
@@ -42,14 +42,14 @@ public class TripPlanServiceTest {
     private TripPlanRepository tripPlanRepository;
 
     @AfterEach
-    public void setUp() {
+    void setUp() {
         tripPlanRepository.deleteAll();
     }
 
 
     @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
-    public void testCreateTripPlan() {
+    void testCreateTripPlan() {
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
@@ -81,7 +81,7 @@ public class TripPlanServiceTest {
     MockMvc mockMvc;
     @DisplayName("查询不存在的TripPlan应该返回404")
     @Test
-    public void shouldReturn404ErrorWhenTripPlanNotExisted() throws Exception {
+    void shouldReturn404ErrorWhenTripPlanNotExisted() throws Exception {
         String tripPlanId = "not_existed_trip_plan_id";
         mockMvc.perform(get(urlTripPlan + tripPlanId)
                 .header("user-id", "user-id-1"))
@@ -90,7 +90,7 @@ public class TripPlanServiceTest {
 
     @DisplayName("查询用户的所有TripPlan")
     @Test
-    public void testRetrieveAllTripPlans(){
+    void testRetrieveAllTripPlans(){
         UserId userId = UserId.of("user_1");
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
@@ -102,7 +102,7 @@ public class TripPlanServiceTest {
 
     @DisplayName("取消已创建的TripPlan应该返回200")
     @Test
-    public void testCancelTripPlan() throws Exception {
+    void testCancelTripPlan() throws Exception {
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))

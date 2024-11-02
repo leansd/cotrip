@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
-public class CoTripMatchingWebSocketIntegrationTest {
+class CoTripMatchingWebSocketIntegrationTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
     @Autowired
     private TestRestTemplate restTemplate;
@@ -44,7 +44,7 @@ public class CoTripMatchingWebSocketIntegrationTest {
     WebSocketTestTemplate testTemplate = null;
 
     @BeforeEach
-    public void setUp() throws InterruptedException {
+    void setUp() throws InterruptedException {
         testTemplate = new WebSocketTestTemplate("ws://localhost:" + this.port + WebSocketConfig.WS_ENDPOINT,
                 "user-id-1",
                 TripPlanStatusNotificationController.UPDATE_QUEUE,
@@ -77,7 +77,7 @@ public class CoTripMatchingWebSocketIntegrationTest {
 
     @DisplayName("匹配成功后应该更新TripPlan的状态(从WebSocket接口验证)")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws Exception {
+    void shouldChangeTripPlanStatusWhenMatchedVerifiedByWebSocket() throws Exception {
         testTemplate.verify(()->{});
     }
 }

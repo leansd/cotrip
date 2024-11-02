@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TimeRangeMatcherTest {
+class TimeRangeMatcherTest {
 
     private TimeSpanMatcher matcher;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         matcher = new TimeSpanMatcher();
     }
 
     @Test
-    public void testMatchingTimeRanges() {
+    void testMatchingTimeRanges() {
         TimeSpan timeSpan1 = TimeSpan.builder()
             .start(LocalDateTime.of(2023, 8, 21, 8, 0))
             .end(LocalDateTime.of(2023, 8, 21, 10, 0))
@@ -35,7 +35,7 @@ public class TimeRangeMatcherTest {
     }
 
     @Test
-    public void testNonMatchingTimeRanges() {
+    void testNonMatchingTimeRanges() {
         TimeSpan timeSpan1 = TimeSpan.builder()
             .start(LocalDateTime.of(2023, 8, 21, 8, 0))
             .end(LocalDateTime.of(2023, 8, 21, 10, 0))

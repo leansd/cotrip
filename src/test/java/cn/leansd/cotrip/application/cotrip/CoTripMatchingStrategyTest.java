@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CoTripMatchingStrategyTest {
+class CoTripMatchingStrategyTest {
     TripPlanRepository tripPlanRepository = Mockito.mock(TripPlanRepository.class);
     TripPlanService tripPlanService = Mockito.mock(TripPlanService.class);
     CoTripRepository coTripRepository = Mockito.mock(CoTripRepository.class);
@@ -47,7 +47,7 @@ public class CoTripMatchingStrategyTest {
     CoTripMatchingService coTripMatchingService = null;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         coTripMatchingService = new CoTripMatchingService(tripPlanRepository, coTripRepository, geoService,pickupSiteService);
         when(tripPlanRepository.findById(anyString())).thenReturn(Optional.of(new TripPlan(
                 UserId.of("userid"),
@@ -58,7 +58,7 @@ public class CoTripMatchingStrategyTest {
 
     @DisplayName("时间地点完全相同可以匹配")
     @Test
-    public void testMatchingWithExactSamePlan() throws InconsistentStatusException {
+    void testMatchingWithExactSamePlan() throws InconsistentStatusException {
         TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
@@ -87,7 +87,7 @@ public class CoTripMatchingStrategyTest {
 
     @DisplayName("出行时间不一致则无法匹配")
     @Test
-    public void testNoMatchingWithDifferentTimePlan() throws InconsistentStatusException {
+    void testNoMatchingWithDifferentTimePlan() throws InconsistentStatusException {
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -115,7 +115,7 @@ public class CoTripMatchingStrategyTest {
 
     @DisplayName("座位数不超出限制可以匹配")
     @Test
-    public void testMatchingWhenNoExceedMaxSeats() throws InconsistentStatusException {
+    void testMatchingWhenNoExceedMaxSeats() throws InconsistentStatusException {
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -143,7 +143,7 @@ public class CoTripMatchingStrategyTest {
 
     @DisplayName("超出座位数限制不可匹配")
     @Test
-    public void testNoMatchingWhenExceedMaxSeats() throws InconsistentStatusException {
+    void testNoMatchingWhenExceedMaxSeats() throws InconsistentStatusException {
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -172,7 +172,7 @@ public class CoTripMatchingStrategyTest {
 
     @DisplayName("起点超出限定距离不可匹配")
     @Test
-    public void shouldNotMatchingWhenStartPointDistanceExceedLimitation() throws InconsistentStatusException {
+    void shouldNotMatchingWhenStartPointDistanceExceedLimitation() throws InconsistentStatusException {
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,
@@ -201,7 +201,7 @@ public class CoTripMatchingStrategyTest {
 
     @DisplayName("起点未超出限定距离可以匹配")
     @Test
-    public void shouldMatchingWhenStartPointDistanceExceedLimitation() throws InconsistentStatusException {
+    void shouldMatchingWhenStartPointDistanceExceedLimitation() throws InconsistentStatusException {
         // Given 出行计划A
         PlanSpecification specA = new PlanSpecification(
                 orientalPear, peopleSquare,

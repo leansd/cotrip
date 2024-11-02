@@ -3,6 +3,7 @@ package cn.leansd.geo.haversine;
 import cn.leansd.geo.Location;
 
 public class HaversineDistance {
+    private HaversineDistance(){}
     public static double between(double lat1, double lon1, double lat2, double lon2) {
         int earthRadiusKm = 6371;
         double dLat = Math.toRadians(lat2 - lat1);
@@ -18,7 +19,7 @@ public class HaversineDistance {
         return earthRadiusKm * c;
     }
 
-    public static double between(Location location1, Location location2) {
-        return between(location1.getLatitude(), location1.getLongitude(), location2.getLatitude(), location2.getLongitude());
+    public static double between(Location firstLocation, Location secondLocation) {
+        return between(firstLocation.getLatitude(), firstLocation.getLongitude(), secondLocation.getLatitude(), secondLocation.getLongitude());
     }
 }
