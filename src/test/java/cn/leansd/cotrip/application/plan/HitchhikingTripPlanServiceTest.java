@@ -14,12 +14,12 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 
-import static cn.leansd.cotrip.application.TestMap.*;
+import static cn.leansd.cotrip.application.TestMap.hqAirport;
+import static cn.leansd.cotrip.application.TestMap.peopleSquare;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 class HitchhikingTripPlanServiceTest {
     @Mock

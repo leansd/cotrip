@@ -1,6 +1,9 @@
 package cn.leansd.cotrip.application.cotrip;
 
 import cn.leansd.base.exception.InconsistentStatusException;
+import cn.leansd.cotrip.application.cotrip.filter.CandidatesFilter;
+import cn.leansd.cotrip.application.cotrip.filter.CandidatesFilterFactory;
+import cn.leansd.cotrip.application.plan.TripPlanDTO;
 import cn.leansd.cotrip.domain.cotrip.CoTrip;
 import cn.leansd.cotrip.domain.cotrip.CoTripFactory;
 import cn.leansd.cotrip.domain.cotrip.CoTripId;
@@ -9,9 +12,6 @@ import cn.leansd.cotrip.domain.plan.PickupLocation;
 import cn.leansd.cotrip.domain.plan.TripPlan;
 import cn.leansd.cotrip.domain.plan.TripPlanCreatedEvent;
 import cn.leansd.cotrip.domain.plan.TripPlanRepository;
-import cn.leansd.cotrip.application.cotrip.filter.CandidatesFilterFactory;
-import cn.leansd.cotrip.application.cotrip.filter.CandidatesFilter;
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
 import cn.leansd.geo.GeoService;
 import cn.leansd.geo.haversine.HaversineDistance;
 import cn.leansd.site.service.PickupSiteDTO;

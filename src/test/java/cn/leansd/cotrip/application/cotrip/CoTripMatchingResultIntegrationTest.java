@@ -2,9 +2,9 @@ package cn.leansd.cotrip.application.cotrip;
 
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.base.ws.WebSocketTestTemplate;
+import cn.leansd.cotrip.application.plan.TripPlanDTO;
 import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
 import cn.leansd.cotrip.domain.plan.*;
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
