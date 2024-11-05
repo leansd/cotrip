@@ -1,6 +1,5 @@
 package cn.leansd.site;
 
-import cn.leansd.cotrip.model.plan.TripPlanCreatedEvent;
 import cn.leansd.site.model.site.SiteType;
 import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteNotAvailableEvent;
@@ -16,7 +15,7 @@ import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static cn.leansd.cotrip.service.TestMap.*;
+import static cn.leansd.cotrip.application.TestMap.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

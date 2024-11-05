@@ -1,7 +1,7 @@
 package cn.leansd.cotrip.controller;
 
 import cn.leansd.base.exception.InconsistentStatusException;
-import cn.leansd.cotrip.model.plan.TripPlanJoinedEvent;
+import cn.leansd.cotrip.domain.plan.TripPlanJoinedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
