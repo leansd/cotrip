@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("dev")
 @AutoConfigureMockMvc
-public class CoTripMatchingResultMvcTest {
+class CoTripMatchingResultMvcTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
 
     @Autowired
@@ -46,7 +46,7 @@ public class CoTripMatchingResultMvcTest {
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         objectMapper.registerModule(new JavaTimeModule());
 
         LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
@@ -85,7 +85,7 @@ public class CoTripMatchingResultMvcTest {
 
     @DisplayName("匹配成功后应该更新TripPlan的状态(数据库验证)")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByDb() {
+    void shouldChangeTripPlanStatusWhenMatchedVerifiedByDb() {
         TripPlan savedExistingPlan = tripPlanRepository.findById(firstTripPlan.getId()).orElse(null);
         TripPlan savedNewPlan = tripPlanRepository.findById(secondTripPlan.getId()).orElse(null);
         assertThat(savedExistingPlan.getStatus()).isEqualTo(TripPlanStatus.JOINED);
@@ -94,7 +94,7 @@ public class CoTripMatchingResultMvcTest {
 
     @DisplayName("匹配成功后应该更新TripPlan的状态(接口验证)")
     @Test
-    public void shouldChangeTripPlanStatusWhenMatchedVerifiedByAPI() throws Exception {
+    void shouldChangeTripPlanStatusWhenMatchedVerifiedByAPI() throws Exception {
         MvcResult result1 = mockMvc.perform(
                         get(urlTripPlan + firstTripPlan.getId())
                                 .header("User-Id", "user-id-1")

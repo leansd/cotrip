@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("dev")
 @DirtiesContext
-public class CoTripMatchingFilterTest {
+class CoTripMatchingFilterTest {
     @Autowired CoTripMatchingService coTripMatchingService;
     @Autowired TripPlanService tripPlanService;
     PlanSpecification spec = new PlanSpecification(
@@ -36,7 +36,7 @@ public class CoTripMatchingFilterTest {
                     LocalDateTime.of(2023, 5, 1, 8, 30)),1);
     @DisplayName("司机单不会匹配无车共乘单")
     @Test
-    public void shouldNotMatchRideSharingToHitchhiking() throws InconsistentStatusException, NoVehicleOwnerException, RequestedResourceNotFound {
+    void shouldNotMatchRideSharingToHitchhiking() throws InconsistentStatusException, NoVehicleOwnerException, RequestedResourceNotFound {
         TripPlanDTO existedPlan = tripPlanService.createTripPlan(TripPlanDTO.builder()
                 .userId("user-id-1")
                 .planType(TripPlanType.RIDE_SHARING.name())

@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HaversineDistanceTest {
+class HaversineDistanceTest {
     @Test
-    public void testHaversineDistance() {
+    void testHaversineDistance() {
         // New York (40.730610, -73.935242) to Los Angeles (34.052235, -118.243683)
         // Expected distance is approximately 3930.57 km.
         double result = HaversineDistance.between(40.730610, -73.935242, 34.052235, -118.243683);

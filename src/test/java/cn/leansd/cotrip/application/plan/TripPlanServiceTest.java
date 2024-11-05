@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 @RecordApplicationEvents
-public class TripPlanServiceTest {
+class TripPlanServiceTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
     TripPlanDTO tripPlanDTO = TripPlanDTO.builder().planSpecification(
                     new PlanSpecification(hqAirport, peopleSquare,
@@ -48,14 +48,14 @@ public class TripPlanServiceTest {
     private TripPlanRepository tripPlanRepository;
 
     @AfterEach
-    public void setUp() {
+    void setUp() {
         tripPlanRepository.deleteAll();
     }
 
 
     @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
-    public void testCreateTripPlan() throws NoVehicleOwnerException {
+    void testCreateTripPlan() throws NoVehicleOwnerException {
 
         TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         verifyTripPlanCreated(tripPlan.getId());
@@ -84,7 +84,7 @@ public class TripPlanServiceTest {
     MockMvc mockMvc;
     @DisplayName("查询不存在的TripPlan应该返回404")
     @Test
-    public void shouldReturn404ErrorWhenTripPlanNotExisted() throws Exception {
+    void shouldReturn404ErrorWhenTripPlanNotExisted() throws Exception {
         String tripPlanId = "not_existed_trip_plan_id";
         mockMvc.perform(get(urlTripPlan + tripPlanId)
                 .header("user-id", "user-id-1"))
@@ -93,14 +93,14 @@ public class TripPlanServiceTest {
 
     @DisplayName("查询用户的所有TripPlan")
     @Test
-    public void testRetrieveAllTripPlans() throws NoVehicleOwnerException {
+    void testRetrieveAllTripPlans() throws NoVehicleOwnerException {
         TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         assertEquals(1, tripPlanService.retrieveTripPlans(UserId.of(tripPlanDTO.getUserId())).size());
     }
 
     @DisplayName("取消已创建的TripPlan应该返回200")
     @Test
-    public void testCancelTripPlan() throws Exception {
+    void testCancelTripPlan() throws Exception {
         TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         mockMvc.perform(delete(urlTripPlan + tripPlan.getId())
                 .header("user-id", "user-id-1"))

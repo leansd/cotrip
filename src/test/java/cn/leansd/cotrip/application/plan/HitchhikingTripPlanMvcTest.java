@@ -30,14 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 @DirtiesContext
-public class HitchhikingTripPlanMvcTest {
+class HitchhikingTripPlanMvcTest {
     private static final String urlTripPlan = "/cotrip/plan/v1/trip-plans/";
     @Autowired
     MockMvc mockMvc;
 
     @DisplayName("创建顺风车乘客单应该成功且返回正确的出行计划类型")
     @Test
-    public void testCreateHitchhikingTripPlan() throws Exception {
+    void testCreateHitchhikingTripPlan() throws Exception {
         TripPlanDTO tripPlanDTO = TripPlanDTO.builder().planSpecification(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))

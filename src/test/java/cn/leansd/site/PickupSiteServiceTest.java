@@ -21,19 +21,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @RecordApplicationEvents
-public class PickupSiteServiceTest {
+class PickupSiteServiceTest {
     @Autowired
     private PickupSiteService pickupSiteService;
     @Autowired
     private PickupSiteRepository pickupSiteRepository;
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         pickupSiteRepository.deleteAll();
     }
 
     @DisplayName("存在多个上车点时返回最近的上车点")
     @Test
-    public void testGetNearestPickupSite() {
+    void testGetNearestPickupSite() {
         pickupSiteService.addPickupSite(hqStationSouth);
         pickupSiteService.addPickupSite(peopleSquare);
         PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
@@ -42,7 +42,7 @@ public class PickupSiteServiceTest {
 
     @DisplayName("最近的上车点超过500米时，直接把用户出发位置作为临时上车点")
     @Test
-    public void testDepartureLocationAsPickupSiteWhenNearbyPickupSiteIsTooFar() {
+    void testDepartureLocationAsPickupSiteWhenNearbyPickupSiteIsTooFar() {
         pickupSiteService.addPickupSite(peopleSquare);
         pickupSiteService.setMaxPickupSiteDistance(0.5);
         PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
@@ -53,7 +53,7 @@ public class PickupSiteServiceTest {
 
     @DisplayName("不存在预设的上车点时，直接把用户出发位置作为临时上车点")
     @Test
-    public void testDepartureLocationAsPickupSiteWhenNoPickupSiteDefined() {
+    void testDepartureLocationAsPickupSiteWhenNoPickupSiteDefined() {
         /* no pickup site */
         PickupSiteDTO pickupSiteDTO = pickupSiteService.findNearestPickupSite(nearHqStationSouth);
         assertThat(pickupSiteDTO.getLocation()).isEqualTo(nearHqStationSouth);
@@ -62,7 +62,7 @@ public class PickupSiteServiceTest {
     //
     @DisplayName("临时上车点应该存入数据库并且触发PickupSiteNotAvailable事件")
     @Test
-    public void testSaveTemporaryPickupSiteAndTriggerPickupSiteNotAvailable() {
+    void testSaveTemporaryPickupSiteAndTriggerPickupSiteNotAvailable() {
         pickupSiteService.setMaxPickupSiteDistance(0.5);
         pickupSiteService.findNearestPickupSite(nearHqStationSouth);
         assertThat(pickupSiteRepository.count()).isEqualTo(1);
