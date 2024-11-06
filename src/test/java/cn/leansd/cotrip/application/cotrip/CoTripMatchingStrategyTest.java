@@ -8,6 +8,7 @@ import cn.leansd.cotrip.application.plan.TripPlanService;
 import cn.leansd.cotrip.domain.cotrip.CoTrip;
 import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
 import cn.leansd.cotrip.domain.plan.*;
+import cn.leansd.cotrip.types.PlanSpecification;
 import cn.leansd.geo.GeoService;
 import cn.leansd.site.service.PickupSiteDTO;
 import cn.leansd.site.service.PickupSiteService;

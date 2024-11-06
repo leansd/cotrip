@@ -5,7 +5,7 @@ import cn.leansd.base.model.UserId;
 import cn.leansd.base.session.SessionDTO;
 import cn.leansd.base.session.UserSession;
 import cn.leansd.cotrip.application.plan.NoVehicleOwnerException;
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import cn.leansd.cotrip.application.plan.TripPlanService;
 import cn.leansd.cotrip.domain.plan.TripPlanId;
 import cn.leansd.cotrip.domain.plan.TripPlanType;

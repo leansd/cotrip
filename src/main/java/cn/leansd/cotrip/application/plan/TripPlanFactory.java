@@ -3,6 +3,7 @@ package cn.leansd.cotrip.application.plan;
 import cn.leansd.cotrip.domain.plan.TripPlan;
 import cn.leansd.cotrip.domain.plan.TripPlanConverter;
 import cn.leansd.cotrip.domain.plan.TripPlanCreatedEvent;
+import cn.leansd.cotrip.types.TripPlanDTO;
 
 public class TripPlanFactory {
     public static TripPlan build(TripPlanDTO planDTO) {

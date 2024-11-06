@@ -3,6 +3,8 @@ package cn.leansd.cotrip.application.plan;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.domain.plan.*;
+import cn.leansd.cotrip.types.PlanSpecification;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,10 @@
 package cn.leansd.cotrip.application.plan;
 
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.domain.plan.PlanSpecification;
+import cn.leansd.cotrip.types.PlanSpecification;
 import cn.leansd.cotrip.domain.plan.TripPlanRepository;
 import cn.leansd.cotrip.domain.plan.TripPlanType;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import cn.leansd.vehicle_owner.VehicleOwnerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

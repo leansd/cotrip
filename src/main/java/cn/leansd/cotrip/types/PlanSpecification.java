@@ -1,4 +1,4 @@
-package cn.leansd.cotrip.domain.plan;
+package cn.leansd.cotrip.types;
 
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.geo.Location;

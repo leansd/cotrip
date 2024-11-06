@@ -1,7 +1,7 @@
 package cn.leansd.cotrip.domain.plan;
 
 
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.types.TripPlanDTO;
 
 import java.util.List;
 
