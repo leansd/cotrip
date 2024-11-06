@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class TripPlanDTO {
     private String id;
     private PlanSpecification planSpecification;
-    private String status;
     private String planType;
+    private String status;
     private String userId;
 }

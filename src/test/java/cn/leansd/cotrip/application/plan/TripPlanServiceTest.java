@@ -58,7 +58,6 @@ class TripPlanServiceTest {
     @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
     void testCreateTripPlan() throws NoVehicleOwnerException {
-
         TripPlanDTO tripPlan = tripPlanService.createTripPlan(tripPlanDTO);
         verifyTripPlanCreated(tripPlan.getId());
         verifyTripPlanEventPublished(tripPlan.getId());
