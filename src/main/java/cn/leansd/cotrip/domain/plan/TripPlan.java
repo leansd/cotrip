@@ -2,7 +2,8 @@ package cn.leansd.cotrip.domain.plan;
 
 import cn.leansd.base.model.AggregateRoot;
 import cn.leansd.base.model.UserId;
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.types.PlanSpecification;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import cn.leansd.cotrip.domain.cotrip.CoTripId;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -35,7 +36,7 @@ public class TripPlan extends AggregateRoot {
     public void joinCoTrip(CoTripId coTripId) {
         this.coTripId = coTripId;
         this.status = TripPlanStatus.JOINED;
-        registerEvent(new TripPlanJoinedEvent(new TripPlanDTO(this)));
+        registerEvent(new TripPlanJoinedEvent(TripPlanConverter.toDTO(this)));
     }
 
     @Embedded
@@ -44,6 +45,6 @@ public class TripPlan extends AggregateRoot {
 
     public void cancel() {
         this.status = TripPlanStatus.CANCELED;
-        registerEvent(new TripPlanCanceledEvent(new TripPlanDTO(this)));
+        registerEvent(new TripPlanCanceledEvent(TripPlanConverter.toDTO(this)));
     }
 }

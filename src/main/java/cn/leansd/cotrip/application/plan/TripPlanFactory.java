@@ -1,7 +1,7 @@
 package cn.leansd.cotrip.application.plan;
 
 import cn.leansd.base.model.UserId;
-import cn.leansd.cotrip.domain.plan.PlanSpecification;
+import cn.leansd.cotrip.types.PlanSpecification;
 import cn.leansd.cotrip.domain.plan.TripPlan;
 import cn.leansd.cotrip.domain.plan.TripPlanConverter;
 import cn.leansd.cotrip.domain.plan.TripPlanCreatedEvent;

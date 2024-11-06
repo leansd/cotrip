@@ -2,9 +2,9 @@ package cn.leansd.cotrip.application.cotrip;
 
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
-import cn.leansd.cotrip.domain.plan.PlanSpecification;
+import cn.leansd.cotrip.types.PlanSpecification;
 import cn.leansd.cotrip.domain.plan.TripPlan;
 import cn.leansd.cotrip.domain.plan.TripPlanRepository;
 import cn.leansd.cotrip.domain.plan.TripPlanStatus;
@@ -58,7 +58,7 @@ class CoTripMatchingResultMvcTest {
 
         LocalDateTime Y2305010800 = LocalDateTime.of(2023, 5, 1, 8, 00);
         LocalDateTime Y2305010830 = LocalDateTime.of(2023, 5, 1, 8, 30);
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
+        TripPlanDTO tripPlanDTO = TripPlanDTO.buildFrom(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
                 .build(),1));

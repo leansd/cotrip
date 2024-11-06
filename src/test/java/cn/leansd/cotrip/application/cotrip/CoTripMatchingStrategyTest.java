@@ -4,7 +4,8 @@ import cn.leansd.base.event.EventPublisher;
 import cn.leansd.base.exception.InconsistentStatusException;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.types.PlanSpecification;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import cn.leansd.cotrip.application.plan.TripPlanService;
 import cn.leansd.cotrip.domain.cotrip.CoTrip;
 import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
@@ -59,7 +60,7 @@ class CoTripMatchingStrategyTest {
     @DisplayName("时间地点完全相同可以匹配")
     @Test
     void testMatchingWithExactSamePlan() throws InconsistentStatusException {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
+        TripPlanDTO tripPlanDTO = TripPlanDTO.buildFrom(new PlanSpecification(orientalPear, peopleSquare, TimeSpan.builder()
                 .start(Y2305010800)
                 .end(Y2305010830)
                 .build(),1));

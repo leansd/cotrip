@@ -3,6 +3,8 @@ package cn.leansd.cotrip.application.plan;
 import cn.leansd.base.exception.RequestedResourceNotFound;
 import cn.leansd.base.model.UserId;
 import cn.leansd.cotrip.domain.plan.*;
+import cn.leansd.cotrip.types.PlanSpecification;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

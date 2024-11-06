@@ -3,6 +3,8 @@ package cn.leansd.cotrip.application.plan;
 import cn.leansd.base.model.UserId;
 import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.domain.plan.*;
+import cn.leansd.cotrip.types.PlanSpecification;
+import cn.leansd.cotrip.types.TripPlanDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,7 @@ class TripPlanServiceTest {
     @DisplayName("创建TripPlan应该触发TripPlanCreatedEvent")
     @Test
     void testCreateTripPlan() {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
+        TripPlanDTO tripPlanDTO = TripPlanDTO.buildFrom(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));
@@ -92,7 +94,7 @@ class TripPlanServiceTest {
     @Test
     void testRetrieveAllTripPlans(){
         UserId userId = UserId.of("user_1");
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
+        TripPlanDTO tripPlanDTO = TripPlanDTO.buildFrom(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));
@@ -103,7 +105,7 @@ class TripPlanServiceTest {
     @DisplayName("取消已创建的TripPlan应该返回200")
     @Test
     void testCancelTripPlan() throws Exception {
-        TripPlanDTO tripPlanDTO = new TripPlanDTO(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
+        TripPlanDTO tripPlanDTO = TripPlanDTO.buildFrom(new PlanSpecification(hqAirport, peopleSquare, TimeSpan.builder()
                 .start(LocalDateTime.of(2023, 5, 1, 8, 0))
                 .end(LocalDateTime.of(2023, 5, 1, 8, 30))
                 .build(),1));

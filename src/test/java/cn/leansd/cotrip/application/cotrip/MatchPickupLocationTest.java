@@ -6,6 +6,7 @@ import cn.leansd.base.types.TimeSpan;
 import cn.leansd.cotrip.application.plan.TripPlanService;
 import cn.leansd.cotrip.domain.cotrip.CoTripRepository;
 import cn.leansd.cotrip.domain.plan.*;
+import cn.leansd.cotrip.types.PlanSpecification;
 import cn.leansd.geo.GeoService;
 import cn.leansd.geo.haversine.HaversineGeoService;
 import cn.leansd.site.application.PickupSiteDTO;

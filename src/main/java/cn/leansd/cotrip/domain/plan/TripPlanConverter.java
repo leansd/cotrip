@@ -1,7 +1,7 @@
 package cn.leansd.cotrip.domain.plan;
 
 
-import cn.leansd.cotrip.application.plan.TripPlanDTO;
+import cn.leansd.cotrip.types.TripPlanDTO;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ public class TripPlanConverter {
         dto.setId(entity.getId());
         dto.setPlanSpecification(entity.getPlanSpecification());
         dto.setStatus(entity.getStatus().name());
+        dto.setUserId(entity.getCreatorId());
         return dto;
     }
     public static TripPlan toEntity(TripPlanDTO dto) {
